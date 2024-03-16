@@ -14,7 +14,7 @@ def documentosCarga_template(request):
     return HttpResponse(template.render())
     
 @csrf_exempt
-def documentosCarga_view(request, session_pk):
+def documentosCarga_view(request):
     if request.method == 'GET':
         id = request.GET.get('id', None)
         if id:
