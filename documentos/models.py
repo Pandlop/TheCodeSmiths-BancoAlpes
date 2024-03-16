@@ -18,3 +18,4 @@ class DocumentoCarga(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.score,self.archivo)
+    

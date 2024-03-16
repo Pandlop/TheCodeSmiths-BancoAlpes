@@ -1,22 +1,35 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargar Documentos</title>
+    <title>Banco Alpes</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
 </head>
 <body>
     <nav>
         <h1>Banco Alpes</h1>
         <div>
-            <a href="">Solicitar tarjeta de crédito</a>
-            <a href="/documentos/documentosCarga">Cargar Documentacion</a>
-            <a href="">Firmar Documentacion</a>
+            <a href="">TDC</a>
+            <a href="/documentos/documentosCarga">Cargar Documentos</a>
+            <a href="">Firmar</a>
         </div>
         
     </nav>
     <main>
         <section id="cargarDocumentos">
+            <div class="headerCard">
+                <h2>Cargar Documentos</h2>
+                <a href="/index.html">X</a>
+            </div>
+            <form action="">
+                <input type="file" multiple>
+                <button id="cargaDocsBtn">Enviar</button>
+                
+            </form>
+            
 
         </section>
     </main>

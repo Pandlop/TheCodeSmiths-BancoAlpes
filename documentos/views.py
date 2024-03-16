@@ -7,8 +7,11 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
-def documentosCarga_view(request):
+def documentosCarga_template(request):
     template = loader.get_template('documentosCarga.html')
+    return HttpResponse(template.render())
+    
+def documentosCarga_(request):
     if request.method == 'GET':
         id = request.GET.get('id', None)
         if id:
