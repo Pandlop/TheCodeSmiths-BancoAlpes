@@ -25,7 +25,7 @@ def documentosCarga_view(request):
             documentosCarga_dto = ldc.get_documentosCarga()
             documentosCarga = serializers.serialize('json', documentosCarga_dto )
             contexto ={'documentosCarga': documentosCarga_dto}
-            render(request, 'documentosCarga.html',contexto)
+            return render(request, 'documentosCarga.html',contexto)
         
     if request.method == 'POST':
         documentoCarga_dto = ldc.create_documentoCarga(json.loads(request.body))
