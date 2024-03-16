@@ -1,4 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import loader
 
-def home(resquest):
-    return HttpResponse("Hello world, django views")
+def main(request):
+    template = loader.get_template('index.html')
+    return HttpResponse(template.render())

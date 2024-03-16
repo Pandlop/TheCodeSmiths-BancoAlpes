@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+}
+
+nav{
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    flex-wrap: wrap;
+    border-bottom: 1px solid black;
+}
+
+nav h1 {
+    padding: 1em;
+}
+nav div a{
+    color: black;
+    text-decoration: none;
+    padding: 1em;
+}
+
+nav div a:hover{
+    color: blue;
+    text-decoration: none;
+    padding: 1em;
+}
+
+nav div {
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+}
