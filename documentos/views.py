@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from .logic import logic_documentosCarga as ldc
 from django.http import HttpResponse
 from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
+from .forms import FileUploadForm
+from .models import DocumentoCarga
 
 
 @csrf_exempt
@@ -29,7 +31,12 @@ def documentosCarga_view(request):
         documentoCarga_dto = ldc.create_documentoCarga(json.loads(request.body))
         documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
         return HttpResponse(documentoCarga, 'application/json')
+        
     
+def lista_DocumentosCargados(request):
+    archivos = DocumentoCarga.objects.all()
+    return render(request, 'documentosCarga.html',{'archivos':archivos})
+
 
 
 @csrf_exempt
