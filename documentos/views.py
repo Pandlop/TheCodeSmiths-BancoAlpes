@@ -6,12 +6,14 @@ from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+
 @csrf_exempt
 def documentosCarga_template(request):
     template = loader.get_template('documentosCarga.html')
     return HttpResponse(template.render())
     
-def documentosCarga_(request):
+@csrf_exempt
+def documentosCarga_view(request):
     if request.method == 'GET':
         id = request.GET.get('id', None)
         if id:
