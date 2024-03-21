@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Alpes</title>
     <link rel="stylesheet" href="{% static 'main.css' %}">
-     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
+    <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
 </head>
+
 <body>
     <nav>
         <h1>Banco Alpes</h1>
@@ -16,23 +18,42 @@
             <a href="/documentos/documentosCarga">Cargar Documentos</a>
             <a href="">Firmar</a>
         </div>
-        
+
     </nav>
-    <main>
+
+    <main style="margin-top: 1rem;">
         <section id="cargarDocumentos">
             <div class="headerCard">
                 <h2>Cargar Documentos</h2>
                 <a href="/index.html">X</a>
             </div>
-            <form action="">
-                <input type="file" multiple>
-                <button id="cargaDocsBtn">Enviar</button>
-                
+
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form}}
+                <input type="file" name="archivo" multiple>
+                <input type="submit" value="Enviar" />
             </form>
-            
+
+            <div style="margin-top: 10px;">
+                <h3>Documentos subidos</h3>
+                {% for doc in documentosSubidos %}
+                <li>{{ doc }}</li>
+                {% endfor %}
+            </div>
 
         </section>
     </main>
-    
+
+    {% if docsExitosos %}
+
+    <script>
+        alert("Documentos subidos exitosamente");
+    </script>
+
+    {% endif %}
+
 </body>
+
 </html>

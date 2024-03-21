@@ -38,14 +38,6 @@ main {
     padding: 0 1em 1em 1em;
 }
 
-.centerDiv {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    height: 100vh;
-}
-
 form input[type="file"]::file-selector-button{
     padding: 0.5em 1em;
     border: 1px solid black;
