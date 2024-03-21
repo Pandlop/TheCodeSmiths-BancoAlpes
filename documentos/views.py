@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from .logic import logic_documentosCarga as ldc
 from django.http import HttpResponse
 from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
+
 
 
 @csrf_exempt
@@ -23,14 +24,14 @@ def documentosCarga_view(request):
         else:
             documentosCarga_dto = ldc.get_documentosCarga()
             documentosCarga = serializers.serialize('json', documentosCarga_dto )
-            return HttpResponse(documentosCarga, 'application/json')
+            contexto ={'documentosCarga': documentosCarga_dto}
+            return render(request, 'documentosCarga.html',contexto)
         
     if request.method == 'POST':
         documentoCarga_dto = ldc.create_documentoCarga(json.loads(request.body))
         documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
         return HttpResponse(documentoCarga, 'application/json')
     
-
 
 @csrf_exempt
 def documentoCarga_view(request, doc_pk):

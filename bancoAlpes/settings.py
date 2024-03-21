@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tcdz@id-@^=95@cidch_3u$08vl4duxc4vq=fp3%5-s3fb&d&(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistenciabancoalpes",
-        'USER': "juanlopez",
-        "PASSWORD": "Codesmiths",
-        "HOST": "localhost",
+        'NAME': "persistencia-db",
+        'USER': "codesmiths-user",
+        "PASSWORD": "codesmiths",
+        "HOST": "10.32.208.3",
         "PORT": "5432",
     }
 }
