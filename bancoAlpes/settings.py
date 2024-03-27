@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia-db",
-        'USER': "codesmiths-user",
-        "PASSWORD": "codesmiths",
-        "HOST": "10.32.208.3",
+        'NAME': "persistenciabancoalpes",
+        'USER': "juanlopez",
+        "PASSWORD": "Codesmiths",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }

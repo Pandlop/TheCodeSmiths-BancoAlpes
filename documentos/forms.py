@@ -3,9 +3,16 @@ from .models import DocumentoCarga
 
 class ArchivoForm(forms.ModelForm):
     # score = forms.FloatField()
-    archivo = forms.FileField()
+    ccFrontal = forms.FileField()
+    ccTrasera = forms.FileField()
+    desprendiblePago1 = forms.FileField()
+    desprendiblePago2 = forms.FileField()
+
     class Meta:
         model = DocumentoCarga
         fields = [
-            'archivo'
+            'ccFrontal',
+            'ccTrasera',
+            'desprendiblePago1',
+            'desprendiblePago2'
         ]
