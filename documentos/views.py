@@ -87,6 +87,8 @@ from django.contrib import messages
 from .logic import logic_documentosCarga as ldc
 from django.core import serializers
 from django.http import HttpResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 def file_list(request):
     files = DocumentoCarga.objects.all()
@@ -140,13 +142,22 @@ def list_docs(request):
     
         
         
-
+@csrf_exempt
 def list_docs_id(request,docId):
     if request.method=="GET":
         documentoCarga_dto = ldc.get_documentoCarga(docId)
         documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
         return HttpResponse(documentoCarga, 'application/json')
         # return render(request, 'documentosCarga.html', {'documentosCarga': documentoCarga})
+    elif request.method=="DELETE":
+        documentoCarga_dto = ldc.delete_documentoCarga(docId)
+        return HttpResponse(request)
+    elif request.method=="PUT":
+        data = json.loads(request.body)
+        new_doc = DocumentoCarga(archivo = data)
+        documentoCarga_dto = ldc.update_documentoCarga(docId,new_doc)
+        documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
+        return HttpResponse(documentoCarga, 'application/json')
 
 
 
