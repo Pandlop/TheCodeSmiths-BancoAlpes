@@ -101,6 +101,10 @@ table {
     width: 100%;
 }
 
+table th {
+    background-color: darkgray
+    ;
+}
 table td, table th {
     border: 1px solid #ddd;
     padding: 8px;
