@@ -8,6 +8,8 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="{% static 'documentosCarga.js' %}"></script>  
 </head>
 
 <body>
@@ -47,9 +49,11 @@
     
                 <div style="margin-top: 10px; padding: 0 1em;">
                     <h3 style="text-align: center;">Documentos subidos</h3>
-                    <table>
+                    <table id="tablaDocs">
                         <thead>
                             <tr>
+                                <th></th>
+                                <th></th>
                                 <th>Nombre</th>
                                 <th>Score</th>
                             </tr>
@@ -57,6 +61,8 @@
                         <tbody>
                             {% for doc in documentosSubidos %}
                             <tr>
+                                <td class="icon" onclick="eliminarDoc('{{doc.id}}',this.parentNode)"><i class="material-icons">delete</i></td>
+                                <td class="icon" onclick="editarDoc('{{doc.id}}',this)"><i class="material-icons">edit</i></td>
                                 <td>{{doc.archivo}}</td>
                                 <td>{{doc.score}}</td>
                             </tr>
@@ -81,7 +87,11 @@
     </script>
 
     {% endif %}
+    <footer>
+        <a target="_blank" href="https://icons8.com/icon/67884/delete">Delete</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+    </footer>
 
 </body>
+
 
 </html>

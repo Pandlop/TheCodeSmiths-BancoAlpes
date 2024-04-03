@@ -84,6 +84,9 @@ from .models import DocumentoCarga
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from .logic import logic_documentosCarga as ldc
+from django.core import serializers
+from django.http import HttpResponse
 
 def file_list(request):
     files = DocumentoCarga.objects.all()
@@ -91,9 +94,12 @@ def file_list(request):
 
 
 def list_docs(request):
+    
 
     docsExitosos = False
 
+    
+    
     if request.method == 'POST':
 
         form = ArchivoForm(request.POST, request.FILES)
@@ -127,11 +133,24 @@ def list_docs(request):
         else:
             docsExitosos = False
             return render(request, 'docsFallidos.html')
-            
     else:
-        documentosSubidos = DocumentoCarga.objects.all()
-        context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos}
-        return render(request, 'documentosCarga.html', context)
+            documentosSubidos = DocumentoCarga.objects.all()
+            context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos}
+            return render(request, 'documentosCarga.html', context)   
+    
+        
+        
+
+def list_docs_id(request,docId):
+    if request.method=="GET":
+        documentoCarga_dto = ldc.get_documentoCarga(docId)
+        documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
+        return HttpResponse(documentoCarga, 'application/json')
+        # return render(request, 'documentosCarga.html', {'documentosCarga': documentoCarga})
+
+
+
+    
 
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):

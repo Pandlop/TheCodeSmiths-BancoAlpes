@@ -121,8 +121,32 @@ table td, table th {
 
 table td {
     width: 50%;
-    word-wrap:break-word
+    word-wrap:break-word;
 }
+
+.icon {
+    width: 1%;
+}
+
+.icon button {
+    background-color: white;
+    border: none;
+}
+
+.icon:hover{
+    cursor:pointer;
+}
+
+.icon:nth-of-type(n):hover{
+    background-color: palevioletred;
+}
+
+.icon:nth-of-type(2n):hover{
+    background-color: palegoldenrod;
+}
+
+
+
 
 
 
