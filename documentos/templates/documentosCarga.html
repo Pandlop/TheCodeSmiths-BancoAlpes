@@ -62,7 +62,7 @@
                             {% for doc in documentosSubidos %}
                             <tr>
                                 <td class="icon" onclick="eliminarDoc('{{doc.id}}',this.parentNode)"><i class="material-icons">delete</i></td>
-                                <td class="icon" onclick="editarDoc('{{doc.id}}',this)">
+                                <td class="icon" onclick="editarDoc('{{doc.id}}',this.parentNode)">
                                     <label for="updateFile" style="cursor: pointer;">
                                         <i class="material-icons">edit</i>
                                     </label>
