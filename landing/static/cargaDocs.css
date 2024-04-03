@@ -68,6 +68,7 @@ form input[type="file"]::file-selector-button{
 form input[type="file"]::file-selector-button:hover{
     cursor: pointer;
     background-color: #f3f4f6;
+    transition: background-color 200ms ease-in-out;
 }
 
 form button{
@@ -82,6 +83,13 @@ form button{
     align-self: center;
 }
 
+form button:hover {
+    cursor: pointer;
+    background-color: gray;
+    color:white;
+    transition: all 100ms ease-in-out;
+}
+
 
 #cargaDocsBtn {
     color: white;
@@ -94,6 +102,7 @@ form button{
 #cargaDocsBtn:hover {
     cursor: pointer;
     background-color: #8ecae6;
+    
 }
 
 table {
