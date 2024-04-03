@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Alpes</title>
+    {% load static %}
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
 </head>
@@ -27,34 +27,49 @@
                 <h2>Cargar Documentos</h2>
                 <a href="">X</a>
             </div>
-            <div class="bodyCard">
+            <div id="bodyCard">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form}}
+                    <h4>Adjunte la cara frontal de su documento de identidad</h3>
+                    <input type="file" name="ccFrontal">
+                    <br>
+                    <h4>Adjunte la cara trasera de su documento de identidad</h3>
+                    <input type="file" name="ccTrasera">
+                    <br>
+                    <h4>Adjunte el primer desprendible de pago</h3>
+                    <input type="file" name="desprendiblePago1">
+                    <br>
+                    <h4>Adjunte el segundo desprendible de pago</h3>
+                    <input type="file" name="desprendiblePago2">
+                    <button type="submit">Enviar</button>
+                </form>
+    
+                <div style="margin-top: 10px; padding: 0 1em;">
+                    <h3 style="text-align: center;">Documentos subidos</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documentosSubidos %}
+                            <tr>
+                                <td>{{doc.archivo}}</td>
+                                <td>{{doc.score}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    
+                </div>
                 
             </div>
 
-
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{form}}
-                <h4>Adjunte la cara frontal de su documento de identidad</h3>
-                <input type="file" name="ccFrontal">
-                <br>
-                <h4>Adjunte la cara trasera de su documento de identidad</h3>
-                <input type="file" name="ccTrasera">
-                <br>
-                <h4>Adjunte el primer desprendible de pago</h3>
-                <input type="file" name="desprendiblePago1">
-                <br>
-                <h4>Adjunte el segundo desprendible de pago</h3>
-                <input type="file" name="desprendiblePago2">
-                <input type="submit" value="Enviar" />
-            </form>
-
-            <div style="margin-top: 10px;">
-                <h3>Documentos subidos</h3>
-                {% for doc in documentosSubidos %}
-                <li>{{ doc }}</li>
-                {% endfor %}
-            </div>
+            
 
         </section>
     </main>
