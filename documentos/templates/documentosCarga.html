@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Alpes</title>
     {% load static %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -49,7 +52,7 @@
     
                 <div style="margin-top: 10px; padding: 0 1em;">
                     <h3 style="text-align: center;">Documentos subidos</h3>
-                    <table id="tablaDocs">
+                    <table id="tablaDocs" class="table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -93,6 +96,10 @@
     </script>
 
     {% endif %}
+
+    <!-- Incluir Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <footer>
         <a target="_blank" href="https://icons8.com/icon/67884/delete">Delete</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
     </footer>
