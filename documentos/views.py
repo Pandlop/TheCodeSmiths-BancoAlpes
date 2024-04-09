@@ -75,7 +75,7 @@
 
 
 
-
+# -*- coding: utf-8 -*-
 
 
 from django.shortcuts import render
@@ -89,6 +89,9 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+
+import requests
+
 
 def file_list(request):
     files = DocumentoCarga.objects.all()
@@ -113,24 +116,53 @@ def list_docs(request):
             desprendiblePago1 = request.FILES.getlist('desprendiblePago1')
             desprendiblePago2 = request.FILES.getlist('desprendiblePago2')
 
+            urlLink = 'https://api.ocr.space/parse/image'
+            apiKey = '79d467c37288957'
+
+            payload = {
+                'apikey': '79d467c37288957',
+                'language': 'spa',
+            }
+
             for f in ccFrontal:
                 instancia = DocumentoCarga(archivo=f)
                 instancia.save()
             for f in ccTrasera:
                 instancia = DocumentoCarga(archivo=f)
                 instancia.save()
+                
             for f in desprendiblePago1:
                 instancia = DocumentoCarga(archivo=f)
+
+                response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
+                if response.status_code == 200:
+                    print("Desprendible de pago 1:")
+                    score = asignarScore(response, 'desprendiblePago')
+                    print("")
+                    instancia.score = score
+                else:
+                    print('Error en la petición de OCR ccFrontal')
+
                 instancia.save()
             for f in desprendiblePago2:
                 instancia = DocumentoCarga(archivo=f)
+
+                response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
+                if response.status_code == 200:
+                    print("Desprendible de pago 2:")
+                    score = asignarScore(response, 'desprendiblePago')
+                    print("")
+                    instancia.score = score
+                else:
+                    print('Error en la petición de OCR ccFrontal')
+
                 instancia.save()
 
             messages.success(request, 'Archivo subido correctamente')
 
             docsExitosos = True
             
-            return HttpResponseRedirect(reverse('list_docs'))
+            return HttpResponseRedirect(reverse('confirmacion'))
         
         else:
             docsExitosos = False
@@ -170,3 +202,39 @@ def indexDocumentos(request):
 
 def docsFallidos(request):
     return render(request, 'docsFallidos.html')
+
+
+def confirmacion(request):
+    return render(request, 'pantallaConfirmacion.html')
+
+
+def asignarScore(response, tipoDoc):
+    jsonResponse = json.loads(response.content)
+
+    if tipoDoc == 'desprendiblePago':
+
+        palabraClave = {
+            'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
+            'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
+            'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
+            'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
+            'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
+            'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
+        }
+
+        # total_palabras_clave = sum(palabraClave.values())
+        total_palabras_clave = len(palabraClave)
+        score = 0
+
+        for palabra, peso in palabraClave.items():
+            if (palabra in jsonResponse['ParsedResults'][0]['ParsedText'] or
+                    palabra.upper() in jsonResponse['ParsedResults'][0]['ParsedText'] or
+                    palabra.capitalize() in jsonResponse['ParsedResults'][0]['ParsedText']):
+                score += peso
+
+        if score / total_palabras_clave >= 1:
+            return 1
+        elif score / total_palabras_clave <= 0:
+            return 0
+        else:
+            return score / total_palabras_clave
