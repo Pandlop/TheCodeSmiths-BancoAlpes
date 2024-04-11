@@ -100,11 +100,8 @@ def file_list(request):
 
 def list_docs(request):
     
-
     docsExitosos = False
 
-    
-    
     if request.method == 'POST':
 
         form = ArchivoForm(request.POST, request.FILES)
@@ -116,6 +113,7 @@ def list_docs(request):
             desprendiblePago1 = request.FILES.getlist('desprendiblePago1')
             desprendiblePago2 = request.FILES.getlist('desprendiblePago2')
 
+            # Tener en doc aparte
             urlLink = 'https://api.ocr.space/parse/image'
             apiKey = '79d467c37288957'
 
@@ -123,6 +121,7 @@ def list_docs(request):
                 'apikey': '79d467c37288957',
                 'language': 'spa',
             }
+            #####
 
             for f in ccFrontal:
                 instancia = DocumentoCarga(archivo=f)
@@ -171,9 +170,7 @@ def list_docs(request):
             documentosSubidos = DocumentoCarga.objects.all()
             context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos}
             return render(request, 'documentosCarga.html', context)   
-    
-        
-        
+          
 @csrf_exempt
 def list_docs_id(request,docId):
     if request.method=="GET":
