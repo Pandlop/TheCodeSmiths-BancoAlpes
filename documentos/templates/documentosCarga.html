@@ -7,8 +7,6 @@
     <title>Banco Alpes</title>
     {% load static %}
     {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -37,16 +35,16 @@
                     {% csrf_token %}
                     {{form}}
                     <h4>Adjunte la cara frontal de su documento de identidad</h3>
-                    <input type="file" name="ccFrontal">
+                    <input type="file" name="ccFrontal" accept="image/png, image/jpeg, image/jpg">
                     <br>
                     <h4>Adjunte la cara trasera de su documento de identidad</h3>
-                    <input type="file" name="ccTrasera">
+                    <input type="file" name="ccTrasera" accept="image/png, image/jpeg, image/jpg">
                     <br>
                     <h4>Adjunte el primer desprendible de pago</h3>
-                    <input type="file" name="desprendiblePago1">
+                    <input type="file" name="desprendiblePago1" accept="image/png, image/jpeg, image/jpg">
                     <br>
                     <h4>Adjunte el segundo desprendible de pago</h3>
-                    <input type="file" name="desprendiblePago2">
+                    <input type="file" name="desprendiblePago2" accept="image/png, image/jpeg, image/jpg">
                     <button type="submit">Enviar</button>
                 </form>
     
@@ -69,7 +67,7 @@
                                     <label for="updateFile" style="cursor: pointer;">
                                         <i class="material-icons">edit</i>
                                     </label>
-                                    <input type="file" id="updateFile"  style="display: none;">
+                                    <input type="file" id="updateFile"  style="display: none;" accept="image/png, image/jpeg, image/jpg">
                                     
                                 </td>
                                 <td>{{doc.archivo}}</td>
@@ -89,10 +87,10 @@
         </section>
     </main>
 
-    {% if docsExitosos %}
+    {% if docsExitosos or post%}
 
     <script>
-        alert("Documentos subidos exitosamente");
+        alert("{{message}}");
     </script>
 
     {% endif %}
