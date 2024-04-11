@@ -131,7 +131,6 @@ def list_docs(request):
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
                 asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                 instanciaCcFrontal.save()
-                
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
                 asignarScoreG(instanciaCcTrasera, 'ccTrasera')
@@ -387,6 +386,9 @@ def detect_text(file):
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
     return text
+
+
+
 
 def detect_faces(file):
     """Detects faces in an image."""
