@@ -90,10 +90,18 @@ DATABASES = {
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': "bancoalpes-persistencia",
+    #     'NAME': "persistencia_db",
+    #     'USER': "codesmiths_user",
+    #     "PASSWORD": "codesmiths",
+    #     "HOST": "10.128.0.6",
+    #     "PORT": "5432",
+    # },
+    # 'validacion_docsbd': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "validaciondocsbd",
     #     'USER': "empleadobancoalpes",
     #     "PASSWORD": "CodeSmiths",
-    #     "HOST": "10.128.0.6",
+    #     "HOST": "10.128.0.7",
     #     "PORT": "5432",
     # }
 
