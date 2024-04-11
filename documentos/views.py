@@ -129,50 +129,24 @@ def list_docs(request):
 
             for f in ccFrontal:
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
-                threadCcFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal'))
-                # instancia.save()
+                asignarScoreG(instanciaCcFrontal, 'ccFrontal')
+                instanciaCcFrontal.save()
+                
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
-                threadCcTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera'))
-                # instancia.save()
+                asignarScoreG(instanciaCcTrasera, 'ccTrasera')
+                instanciaCcTrasera.save()
                 
             for f in desprendiblePago1:
-                print("Entré a desprendiblePago1")
                 instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
-                print("Instancia desprendiblepago1 creada")
-
-                print("voy a crear el thread de desprendiblePago1")
-                threadDesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
-                print("Thread de desprendiblePago1 creado")
-                # print(detect_text(instanciaDesprendiblePago1.archivo))
-
-                # instancia.save()
+                asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
+                instanciaDesprendiblePago1.save()
 
             for f in desprendiblePago2:
-                print("Entré a desprendiblePago2")
                 instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
-                print("Instancia desprendiblepago2 creada")
+                asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
+                instanciaDesprendiblePago2.save()
 
-                print("voy a crear el thread de desprendiblePago2")
-                threadDesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
-                print("Thread de desprendiblePago2 creado")
-
-                # instancia.save()
-
-            print("Voy a iniciar los threads")
-            threadCcFrontal.start()
-            threadCcTrasera.start()
-            threadDesprendiblePago1.start()
-            threadDesprendiblePago2.start()
-            print("Threads iniciados")
-
-            print("Voy a esperar a que los threads terminen")
-            threadCcFrontal.join()
-            threadCcTrasera.join()
-            threadDesprendiblePago1.join()
-            threadDesprendiblePago2.join()
-            print("Threads terminados")
-            
 
             messages.success(request, 'Archivo subido correctamente')
 
@@ -303,14 +277,9 @@ def confirmacion(request):
 # Funcion para asignar un score a un documento con el api de google
 def asignarScoreG(instancia, tipoDoc):
 
-    print("TipoDoc: ", tipoDoc)
-
     if tipoDoc == 'desprendiblePago':
 
-        print("Voy a hacer la petición de OCR desprendible de pago")
         text = detect_text(instancia.archivo)
-        print("peticion de OCR desprendible de pago hecha: " + text)
-
 
         palabraClave = {
             'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
@@ -328,7 +297,6 @@ def asignarScoreG(instancia, tipoDoc):
             if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
                 score += peso
 
-        print("Score del desprendible de pago: ", score / total_palabras_clave)
         if score / total_palabras_clave >= 1:
             instancia.score = 1
         elif score / total_palabras_clave <= 0:
@@ -336,16 +304,12 @@ def asignarScoreG(instancia, tipoDoc):
         else:
             instancia.score = score / total_palabras_clave
 
-        print("Score asignado al desprendible de pago: ", instancia.score)
         instancia.save()
-        print("Score guardado en la base de datos")
     
 
     elif tipoDoc == "ccFrontal":
 
-        print("Voy a hacer la petición de OCR ccFrontal")
         text = detect_text(instancia.archivo)
-        print("peticion de OCR ccFrontal hecha: " + text)
 
         palabraClave = {
             'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,
@@ -361,7 +325,6 @@ def asignarScoreG(instancia, tipoDoc):
                 score += peso
 
 
-        print("Score del ccFrontal: ", score / total_palabras_clave)
         if score / total_palabras_clave >= 1:
             instancia.score = 1
         elif score / total_palabras_clave <= 0:
@@ -369,16 +332,12 @@ def asignarScoreG(instancia, tipoDoc):
         else:
             instancia.score = score / total_palabras_clave
 
-        print("Score asignado al desprendible de pago: ", instancia.score)
         instancia.save()
-        print("Score guardado en la base de datos")
 
 
     elif tipoDoc == "ccTrasera":
 
-        print("Voy a hacer la petición de OCR ccTrasera")
         text = detect_text(instancia.archivo)
-        print("peticion de OCR ccTrasera hecha: " + text)
 
         palabraClave = {
             '.CO': 10, 'REGISTRADOR NACIONAL': 10, 'ICCOLO': 10,
@@ -391,7 +350,6 @@ def asignarScoreG(instancia, tipoDoc):
             if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
                 score += peso
 
-        print("Score del ccTrasera: ", score / total_palabras_clave)
         if score / total_palabras_clave >= 1:
             instancia.score = 1
         elif score / total_palabras_clave <= 0:
@@ -399,9 +357,7 @@ def asignarScoreG(instancia, tipoDoc):
         else:
             instancia.score = score / total_palabras_clave
 
-        print("Score asignado al ccTrasera: ", instancia.score)
         instancia.save()
-        print("Score guardado en la base de datos")
         
 
 
