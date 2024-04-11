@@ -415,8 +415,7 @@ def detect_faces(file): # file es un archivo, no un path
 
     client = vision.ImageAnnotatorClient()
 
-    # with open("documentos\cedula3.jpg", "rb") as image_file:
-    #     content = image_file.read()
+    content = file.read()
 
     file.read()
 
