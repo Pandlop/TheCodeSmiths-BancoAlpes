@@ -94,6 +94,9 @@ import requests
 import threading
 import os
 
+from google.cloud import vision
+
+
 
 
 def file_list(request):
@@ -129,6 +132,7 @@ def list_docs(request):
 
             for f in ccFrontal:
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
+                print("\n\nInstancia: ", instanciaCcFrontal)
                 asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                 instanciaCcFrontal.save()
             for f in ccTrasera:
@@ -308,8 +312,12 @@ def asignarScoreG(instancia, tipoDoc):
 
     elif tipoDoc == "ccFrontal":
 
+        print("\n\nInstancia.archivo: ", instancia.archivo)
+
         text = detect_text(instancia.archivo)
+        print("Instancia.archivo: ", instancia.archivo)
         scoreFace = detect_faces(instancia.archivo)
+        print("ScoreFace: ", scoreFace)
 
         palabraClave = {
             'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,
@@ -325,6 +333,7 @@ def asignarScoreG(instancia, tipoDoc):
                 score += peso
 
         totalScore = ((score / total_palabras_clave) + scoreFace) / 2
+        # totalScore = ((score / total_palabras_clave) + 0) / 2
 
         if totalScore >= 1:
             instancia.score = 1
@@ -365,7 +374,7 @@ def asignarScoreG(instancia, tipoDoc):
 
 
 
-def detect_text(file):
+def detect_text(file): # file es un archivo, no un path
     """Detects text in the file."""
     from google.cloud import vision
 
@@ -374,6 +383,8 @@ def detect_text(file):
     client = vision.ImageAnnotatorClient()
 
     content = file.read()
+
+    print("\n\n\n\file.read() detect text: ", file.read())
     
     image = vision.Image(content=content)
 
@@ -393,17 +404,29 @@ def detect_text(file):
 
 
 
-def detect_faces(file):
+def detect_faces(file): # file es un archivo, no un path
     """Detects faces in an image."""
-    from google.cloud import vision
+
+    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
+
+    print("\n\nfile dentro de detect faces: ", file)
+    print("file.read(): ", file.read())
+
 
     client = vision.ImageAnnotatorClient()
 
-    content = file.read()
+    # with open("documentos\cedula3.jpg", "rb") as image_file:
+    #     content = image_file.read()
+
+    file.read()
+
+    print("\n\n\n\ncontent: ", content)
 
     image = vision.Image(content=content)
 
-    response = client.face_detection(image=image)
+    print(image)
+
+    response = client.face_detection(image=image, max_results=2)
     faces = response.face_annotations
 
     if response.error.message:
@@ -420,3 +443,66 @@ def detect_faces(file):
         return -1
     else:
         return faces[0].detection_confidence
+
+
+
+# def detect_facesV2(file):
+#     """Detects faces in an image."""
+#     from google.cloud import vision
+
+#     client = vision.ImageAnnotatorClient()
+
+#     # content = file.read()
+
+#     with open(file.path, "rb") as f:
+#         imagen = f.read()
+
+#     cadena_base64 = imagen_a_base64(imagen)
+
+#     url = "https://vision.googleapis.com/v1/images:annotate"
+
+#     # Cuerpo de la solicitud
+#     body = {
+#         "requests": [
+#             {
+#             "features": [
+#                 {
+#                 "maxResults": 10,
+#                 "type": "FACE_DETECTION"
+#                 }
+#             ],
+#             "image": {
+#                 "content": cadena_base64
+#             }
+#             }
+#         ]
+#         }
+
+
+#     # image = vision.Image(content=content)
+
+#     response = requests(url, json=body, access_token = "AIzaSyDoOZ3NzWVStHWJfLvfbVY4hRwpTz2wCFo")
+#     faces = response.face_annotations
+
+#     if response.error.message:
+#         raise Exception(
+#             "{}\nFor more info on error messages, check: "
+#             "https://cloud.google.com/apis/design/errors".format(response.error.message)
+#         )
+    
+#     cantidadFaces = len(faces)
+
+#     print(cantidadFaces)
+
+#     if cantidadFaces > 1 or cantidadFaces == 0:
+#         return -1
+#     else:
+#         return faces[0].detection_confidence
+
+
+
+import base64
+
+def imagen_a_base64(imagen):
+    imagen_codificada = base64.b64encode(imagen)
+    return imagen_codificada.decode('utf-8')
