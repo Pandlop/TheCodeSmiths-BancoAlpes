@@ -91,6 +91,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 import requests
+import threading
+
+import os
 
 
 def file_list(request):
@@ -102,10 +105,9 @@ def list_docs(request):
     
 
     docsExitosos = False
-
-    
     
     if request.method == 'POST':
+
 
         form = ArchivoForm(request.POST, request.FILES)
 
@@ -116,14 +118,6 @@ def list_docs(request):
             desprendiblePago1 = request.FILES.getlist('desprendiblePago1')
             desprendiblePago2 = request.FILES.getlist('desprendiblePago2')
 
-            urlLink = 'https://api.ocr.space/parse/image'
-            apiKey = '79d467c37288957'
-
-            payload = {
-                'apikey': '79d467c37288957',
-                'language': 'spa',
-            }
-
             for f in ccFrontal:
                 instancia = DocumentoCarga(archivo=f)
                 instancia.save()
@@ -132,31 +126,37 @@ def list_docs(request):
                 instancia.save()
                 
             for f in desprendiblePago1:
-                instancia = DocumentoCarga(archivo=f)
+                print("Entré a desprendiblePago1")
+                instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
+                print("Instancia desprendiblepago1 creada")
 
-                response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
-                if response.status_code == 200:
-                    print("Desprendible de pago 1:")
-                    score = asignarScore(response, 'desprendiblePago')
-                    print("")
-                    instancia.score = score
-                else:
-                    print('Error en la petición de OCR ccFrontal')
+                print("voy a crear el thread de desprendiblePago1")
+                threadDesprendiblePago1 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
+                print("Thread de desprendiblePago1 creado")
 
-                instancia.save()
+                # instancia.save()
+
             for f in desprendiblePago2:
-                instancia = DocumentoCarga(archivo=f)
+                print("Entré a desprendiblePago2")
+                instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
+                print("Instancia desprendiblepago2 creada")
 
-                response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
-                if response.status_code == 200:
-                    print("Desprendible de pago 2:")
-                    score = asignarScore(response, 'desprendiblePago')
-                    print("")
-                    instancia.score = score
-                else:
-                    print('Error en la petición de OCR ccFrontal')
+                print("voy a crear el thread de desprendiblePago2")
+                threadDesprendiblePago2 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
+                print("Thread de desprendiblePago2 creado")
 
-                instancia.save()
+                # instancia.save()
+
+            print("Voy a iniciar los threads")
+            threadDesprendiblePago1.start()
+            threadDesprendiblePago2.start()
+            print("Threads iniciados")
+
+            print("Voy a esperar a que los threads terminen")
+            threadDesprendiblePago1.join()
+            threadDesprendiblePago2.join()
+            print("Threads terminados")
+            
 
             messages.success(request, 'Archivo subido correctamente')
 
@@ -208,33 +208,72 @@ def confirmacion(request):
     return render(request, 'pantallaConfirmacion.html')
 
 
-def asignarScore(response, tipoDoc):
-    jsonResponse = json.loads(response.content)
+
+# Funcion para asignar un score a un documento
+def asignarScore(instancia, tipoDoc):
+
+    urlLink = 'https://api.ocr.space/parse/image'
+    apiKey = '79d467c37288957'
+
+    payload = {
+        'apikey': '79d467c37288957',
+        'language': 'spa',
+    }
 
     if tipoDoc == 'desprendiblePago':
 
-        palabraClave = {
-            'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
-            'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
-            'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
-            'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
-            'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
-            'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
-        }
+        print("Voy a hacer la petición de OCR desprendible de pago")
+        response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
+        print("peticion de OCR desprendible de pago hecha")
+        # print(response.content)
+        jsonResponse = json.loads(response.content)
 
-        # total_palabras_clave = sum(palabraClave.values())
-        total_palabras_clave = len(palabraClave)
-        score = 0
+        if response.status_code == 200:
+        #     print("Desprendible de pago 1:")
+        #     score = asignarScore(response, 'desprendiblePago')
+        #     print("")
+        #     instancia.score = score
+        # else:
+        #     print('Error en la petición de OCR ccFrontal')
 
-        for palabra, peso in palabraClave.items():
-            if (palabra in jsonResponse['ParsedResults'][0]['ParsedText'] or
-                    palabra.upper() in jsonResponse['ParsedResults'][0]['ParsedText'] or
-                    palabra.capitalize() in jsonResponse['ParsedResults'][0]['ParsedText']):
-                score += peso
 
-        if score / total_palabras_clave >= 1:
-            return 1
-        elif score / total_palabras_clave <= 0:
-            return 0
+            palabraClave = {
+                'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
+                'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
+                'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
+                'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
+                'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
+                'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
+            }
+
+            # total_palabras_clave = sum(palabraClave.values())
+            total_palabras_clave = len(palabraClave)
+            score = 0
+
+            for palabra, peso in palabraClave.items():
+                if (palabra in jsonResponse['ParsedResults'][0]['ParsedText'] or
+                        palabra.upper() in jsonResponse['ParsedResults'][0]['ParsedText'] or
+                        palabra.capitalize() in jsonResponse['ParsedResults'][0]['ParsedText']):
+                    score += peso
+
+            # if score / total_palabras_clave >= 1:
+            #     return 1
+            # elif score / total_palabras_clave <= 0:
+            #     return 0
+            # else:
+            #     return score / total_palabras_clave
+
+            print("Score del desprendible de pago: ", score / total_palabras_clave)
+            if score / total_palabras_clave >= 1:
+                instancia.score = 1
+            elif score / total_palabras_clave <= 0:
+                instancia.score = 0
+            else:
+                instancia.score = score / total_palabras_clave
+
+            print("Score asignado al desprendible de pago: ", instancia.score)
+            instancia.save()
+            print("Score guardado en la base de datos")
+        
         else:
-            return score / total_palabras_clave
+            print('Error en la petición de OCR desprendible de pago')
