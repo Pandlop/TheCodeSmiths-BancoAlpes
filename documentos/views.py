@@ -128,11 +128,13 @@ def list_docs(request):
             #####
 
             for f in ccFrontal:
-                instancia = DocumentoCarga(archivo=f)
-                instancia.save()
+                instanciaCcFrontal = DocumentoCarga(archivo=f)
+                threadCcFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal'))
+                # instancia.save()
             for f in ccTrasera:
-                instancia = DocumentoCarga(archivo=f)
-                instancia.save()
+                instanciaCcTrasera = DocumentoCarga(archivo=f)
+                threadCcTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera'))
+                # instancia.save()
                 
             for f in desprendiblePago1:
                 print("Entré a desprendiblePago1")
@@ -140,9 +142,9 @@ def list_docs(request):
                 print("Instancia desprendiblepago1 creada")
 
                 print("voy a crear el thread de desprendiblePago1")
-                #threadDesprendiblePago1 = threading.Thread(target=detect_text, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
+                threadDesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
                 print("Thread de desprendiblePago1 creado")
-                print(detect_text(instanciaDesprendiblePago1.archivo))
+                # print(detect_text(instanciaDesprendiblePago1.archivo))
 
                 # instancia.save()
 
@@ -152,20 +154,24 @@ def list_docs(request):
                 print("Instancia desprendiblepago2 creada")
 
                 print("voy a crear el thread de desprendiblePago2")
-                #threadDesprendiblePago2 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
+                threadDesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
                 print("Thread de desprendiblePago2 creado")
 
                 # instancia.save()
 
-            # print("Voy a iniciar los threads")
-            # threadDesprendiblePago1.start()
-            # threadDesprendiblePago2.start()
-            # print("Threads iniciados")
+            print("Voy a iniciar los threads")
+            threadCcFrontal.start()
+            threadCcTrasera.start()
+            threadDesprendiblePago1.start()
+            threadDesprendiblePago2.start()
+            print("Threads iniciados")
 
-            # print("Voy a esperar a que los threads terminen")
-            # threadDesprendiblePago1.join()
-            # threadDesprendiblePago2.join()
-            # print("Threads terminados")
+            print("Voy a esperar a que los threads terminen")
+            threadCcFrontal.join()
+            threadCcTrasera.join()
+            threadDesprendiblePago1.join()
+            threadDesprendiblePago2.join()
+            print("Threads terminados")
             
 
             messages.success(request, 'Archivo subido correctamente')
@@ -218,74 +224,187 @@ def docsFallidos(request):
 def confirmacion(request):
     return render(request, 'pantallaConfirmacion.html')
 
-# Funcion para asignar un score a un documento
-def asignarScore(instancia, tipoDoc):
 
-    urlLink = 'https://api.ocr.space/parse/image'
-    apiKey = '79d467c37288957'
 
-    payload = {
-        'apikey': '79d467c37288957',
-        'language': 'spa',
-    }
+
+
+# # Funcion para asignar un score a un documento con el api gratis
+# def asignarScore(instancia, tipoDoc):
+
+#     urlLink = 'https://api.ocr.space/parse/image'
+#     apiKey = '79d467c37288957'
+
+#     payload = {
+#         'apikey': '79d467c37288957',
+#         'language': 'spa',
+#     }
+
+#     if tipoDoc == 'desprendiblePago':
+
+#         print("Voy a hacer la petición de OCR desprendible de pago")
+#         response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
+#         print("peticion de OCR desprendible de pago hecha")
+#         # print(response.content)
+#         jsonResponse = json.loads(response.content)
+
+#         if response.status_code == 200:
+#         #     print("Desprendible de pago 1:")
+#         #     score = asignarScore(response, 'desprendiblePago')
+#         #     print("")
+#         #     instancia.score = score
+#         # else:
+#         #     print('Error en la petición de OCR ccFrontal')
+
+
+#             palabraClave = {
+#                 'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
+#                 'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
+#                 'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
+#                 'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
+#                 'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
+#                 'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
+#             }
+
+#             # total_palabras_clave = sum(palabraClave.values())
+#             total_palabras_clave = len(palabraClave)
+#             score = 0
+
+#             for palabra, peso in palabraClave.items():
+#                 if (palabra in jsonResponse['ParsedResults'][0]['ParsedText'] or
+#                         palabra.upper() in jsonResponse['ParsedResults'][0]['ParsedText'] or
+#                         palabra.capitalize() in jsonResponse['ParsedResults'][0]['ParsedText']):
+#                     score += peso
+
+#             # if score / total_palabras_clave >= 1:
+#             #     return 1
+#             # elif score / total_palabras_clave <= 0:
+#             #     return 0
+#             # else:
+#             #     return score / total_palabras_clave
+
+#             print("Score del desprendible de pago: ", score / total_palabras_clave)
+#             if score / total_palabras_clave >= 1:
+#                 instancia.score = 1
+#             elif score / total_palabras_clave <= 0:
+#                 instancia.score = 0
+#             else:
+#                 instancia.score = score / total_palabras_clave
+
+#             print("Score asignado al desprendible de pago: ", instancia.score)
+#             instancia.save()
+#             print("Score guardado en la base de datos")
+        
+#         else:
+#             print('Error en la petición de OCR desprendible de pago')
+
+
+
+
+# Funcion para asignar un score a un documento con el api de google
+def asignarScoreG(instancia, tipoDoc):
+
+    print("TipoDoc: ", tipoDoc)
 
     if tipoDoc == 'desprendiblePago':
 
         print("Voy a hacer la petición de OCR desprendible de pago")
-        response = requests.post(urlLink, data=payload, files={'file': instancia.archivo})
-        print("peticion de OCR desprendible de pago hecha")
-        # print(response.content)
-        jsonResponse = json.loads(response.content)
-
-        if response.status_code == 200:
-        #     print("Desprendible de pago 1:")
-        #     score = asignarScore(response, 'desprendiblePago')
-        #     print("")
-        #     instancia.score = score
-        # else:
-        #     print('Error en la petición de OCR ccFrontal')
+        text = detect_text(instancia.archivo)
+        print("peticion de OCR desprendible de pago hecha: " + text)
 
 
-            palabraClave = {
-                'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
-                'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
-                'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
-                'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
-                'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
-                'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
-            }
+        palabraClave = {
+            'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
+            'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
+            'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
+            'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
+            'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
+            'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
+        }
 
-            # total_palabras_clave = sum(palabraClave.values())
-            total_palabras_clave = len(palabraClave)
-            score = 0
+        total_palabras_clave = len(palabraClave)
+        score = 0
 
-            for palabra, peso in palabraClave.items():
-                if (palabra in jsonResponse['ParsedResults'][0]['ParsedText'] or
-                        palabra.upper() in jsonResponse['ParsedResults'][0]['ParsedText'] or
-                        palabra.capitalize() in jsonResponse['ParsedResults'][0]['ParsedText']):
-                    score += peso
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+                score += peso
 
-            # if score / total_palabras_clave >= 1:
-            #     return 1
-            # elif score / total_palabras_clave <= 0:
-            #     return 0
-            # else:
-            #     return score / total_palabras_clave
-
-            print("Score del desprendible de pago: ", score / total_palabras_clave)
-            if score / total_palabras_clave >= 1:
-                instancia.score = 1
-            elif score / total_palabras_clave <= 0:
-                instancia.score = 0
-            else:
-                instancia.score = score / total_palabras_clave
-
-            print("Score asignado al desprendible de pago: ", instancia.score)
-            instancia.save()
-            print("Score guardado en la base de datos")
-        
+        print("Score del desprendible de pago: ", score / total_palabras_clave)
+        if score / total_palabras_clave >= 1:
+            instancia.score = 1
+        elif score / total_palabras_clave <= 0:
+            instancia.score = 0
         else:
-            print('Error en la petición de OCR desprendible de pago')
+            instancia.score = score / total_palabras_clave
+
+        print("Score asignado al desprendible de pago: ", instancia.score)
+        instancia.save()
+        print("Score guardado en la base de datos")
+    
+
+    elif tipoDoc == "ccFrontal":
+
+        print("Voy a hacer la petición de OCR ccFrontal")
+        text = detect_text(instancia.archivo)
+        print("peticion de OCR ccFrontal hecha: " + text)
+
+        palabraClave = {
+            'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,
+            'nombres': 5, 'nacionalidad': 5, 'estatura': 5, 'sexo': 5, 'fecha de nacimiento': 5,
+            'lugar de nacimiento': 5, 'fecha y lugar de expedición': 5, 'fecha de expiración': 5, 'firma': 5, 'nuip': 10,
+        }
+
+        total_palabras_clave = sum(palabraClave.values())
+        score = 0
+
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+                score += peso
+
+
+        print("Score del ccFrontal: ", score / total_palabras_clave)
+        if score / total_palabras_clave >= 1:
+            instancia.score = 1
+        elif score / total_palabras_clave <= 0:
+            instancia.score = 0
+        else:
+            instancia.score = score / total_palabras_clave
+
+        print("Score asignado al desprendible de pago: ", instancia.score)
+        instancia.save()
+        print("Score guardado en la base de datos")
+
+
+    elif tipoDoc == "ccTrasera":
+
+        print("Voy a hacer la petición de OCR ccTrasera")
+        text = detect_text(instancia.archivo)
+        print("peticion de OCR ccTrasera hecha: " + text)
+
+        palabraClave = {
+            '.CO': 10, 'REGISTRADOR NACIONAL': 10, 'ICCOLO': 10,
+        }
+
+        total_palabras_clave = sum(palabraClave.values())
+        score = 0
+
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+                score += peso
+
+        print("Score del ccTrasera: ", score / total_palabras_clave)
+        if score / total_palabras_clave >= 1:
+            instancia.score = 1
+        elif score / total_palabras_clave <= 0:
+            instancia.score = 0
+        else:
+            instancia.score = score / total_palabras_clave
+
+        print("Score asignado al ccTrasera: ", instancia.score)
+        instancia.save()
+        print("Score guardado en la base de datos")
+        
+
+
 
 
 
@@ -303,20 +422,15 @@ def detect_text(file):
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
-    print("Texts:")
 
-    for text in texts:
-        print(f'\n"{text.description}"')
-
-        vertices = [
-            f"({vertex.x},{vertex.y})" for vertex in text.bounding_poly.vertices
-        ]
-
-        print("bounds: {}".format(",".join(vertices)))
-
+    text = response.text_annotations[0].description
+    
     if response.error.message:
         raise Exception(
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
+    return text
+
+
 
