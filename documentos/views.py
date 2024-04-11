@@ -92,8 +92,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 import threading
-
 import os
+
 
 
 def file_list(request):
@@ -118,13 +118,13 @@ def list_docs(request):
             desprendiblePago2 = request.FILES.getlist('desprendiblePago2')
 
             # Tener en doc aparte
-            urlLink = 'https://api.ocr.space/parse/image'
-            apiKey = '79d467c37288957'
+            # urlLink = 'https://api.ocr.space/parse/image'
+            # apiKey = '79d467c37288957'
 
-            payload = {
-                'apikey': '79d467c37288957',
-                'language': 'spa',
-            }
+            # payload = {
+            #     'apikey': '79d467c37288957',
+            #     'language': 'spa',
+            # }
             #####
 
             for f in ccFrontal:
@@ -140,8 +140,9 @@ def list_docs(request):
                 print("Instancia desprendiblepago1 creada")
 
                 print("voy a crear el thread de desprendiblePago1")
-                threadDesprendiblePago1 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
+                #threadDesprendiblePago1 = threading.Thread(target=detect_text, args=(instanciaDesprendiblePago1, 'desprendiblePago'))
                 print("Thread de desprendiblePago1 creado")
+                print(detect_text(instanciaDesprendiblePago1.archivo))
 
                 # instancia.save()
 
@@ -151,20 +152,20 @@ def list_docs(request):
                 print("Instancia desprendiblepago2 creada")
 
                 print("voy a crear el thread de desprendiblePago2")
-                threadDesprendiblePago2 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
+                #threadDesprendiblePago2 = threading.Thread(target=asignarScore, args=(instanciaDesprendiblePago2, 'desprendiblePago'))
                 print("Thread de desprendiblePago2 creado")
 
                 # instancia.save()
 
-            print("Voy a iniciar los threads")
-            threadDesprendiblePago1.start()
-            threadDesprendiblePago2.start()
-            print("Threads iniciados")
+            # print("Voy a iniciar los threads")
+            # threadDesprendiblePago1.start()
+            # threadDesprendiblePago2.start()
+            # print("Threads iniciados")
 
-            print("Voy a esperar a que los threads terminen")
-            threadDesprendiblePago1.join()
-            threadDesprendiblePago2.join()
-            print("Threads terminados")
+            # print("Voy a esperar a que los threads terminen")
+            # threadDesprendiblePago1.join()
+            # threadDesprendiblePago2.join()
+            # print("Threads terminados")
             
 
             messages.success(request, 'Archivo subido correctamente')
@@ -206,9 +207,6 @@ def list_docs_id(request,docId):
         return HttpResponse(documentoCarga, 'application/json')
 
 
-
-    
-
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
     return render(request, 'indexDocumentos.html')
@@ -217,11 +215,8 @@ def indexDocumentos(request):
 def docsFallidos(request):
     return render(request, 'docsFallidos.html')
 
-
 def confirmacion(request):
     return render(request, 'pantallaConfirmacion.html')
-
-
 
 # Funcion para asignar un score a un documento
 def asignarScore(instancia, tipoDoc):
@@ -291,3 +286,37 @@ def asignarScore(instancia, tipoDoc):
         
         else:
             print('Error en la petición de OCR desprendible de pago')
+
+
+
+def detect_text(file):
+    """Detects text in the file."""
+    from google.cloud import vision
+
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
+
+    client = vision.ImageAnnotatorClient()
+
+    content = file.read()
+    
+    image = vision.Image(content=content)
+
+    response = client.text_detection(image=image)
+    texts = response.text_annotations
+    print("Texts:")
+
+    for text in texts:
+        print(f'\n"{text.description}"')
+
+        vertices = [
+            f"({vertex.x},{vertex.y})" for vertex in text.bounding_poly.vertices
+        ]
+
+        print("bounds: {}".format(",".join(vertices)))
+
+    if response.error.message:
+        raise Exception(
+            "{}\nFor more info on error messages, check: "
+            "https://cloud.google.com/apis/design/errors".format(response.error.message)
+        )
+
