@@ -88,6 +88,15 @@ DATABASES = {
         "HOST": "localhost",
         "PORT": "5432",
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "bancoalpes-persistencia",
+    #     'USER': "empleadobancoalpes",
+    #     "PASSWORD": "CodeSmiths",
+    #     "HOST": "10.128.0.6",
+    #     "PORT": "5432",
+    # }
+
 }
 
 

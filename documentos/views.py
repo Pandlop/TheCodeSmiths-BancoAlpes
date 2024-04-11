@@ -310,6 +310,7 @@ def asignarScoreG(instancia, tipoDoc):
     elif tipoDoc == "ccFrontal":
 
         text = detect_text(instancia.archivo)
+        scoreFace = detect_faces(instancia.archivo)
 
         palabraClave = {
             'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,
@@ -324,13 +325,14 @@ def asignarScoreG(instancia, tipoDoc):
             if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
                 score += peso
 
+        totalScore = ((score / total_palabras_clave) + scoreFace) / 2
 
-        if score / total_palabras_clave >= 1:
+        if totalScore >= 1:
             instancia.score = 1
-        elif score / total_palabras_clave <= 0:
+        elif totalScore <= 0:
             instancia.score = 0
         else:
-            instancia.score = score / total_palabras_clave
+            instancia.score = totalScore
 
         instancia.save()
 
@@ -388,6 +390,7 @@ def detect_text(file):
         )
     return text
 
+
 def detect_faces(file):
     """Detects faces in an image."""
     from google.cloud import vision
@@ -401,31 +404,17 @@ def detect_faces(file):
     response = client.face_detection(image=image)
     faces = response.face_annotations
 
-    # Names of likelihood from google.cloud.vision.enums
-    likelihood_name = (
-        "UNKNOWN",
-        "VERY_UNLIKELY",
-        "UNLIKELY",
-        "POSSIBLE",
-        "LIKELY",
-        "VERY_LIKELY",
-    )
-    print("Faces:")
-
-    for face in faces:
-        print(f"anger: {likelihood_name[face.anger_likelihood]}")
-        print(f"joy: {likelihood_name[face.joy_likelihood]}")
-        print(f"surprise: {likelihood_name[face.surprise_likelihood]}")
-
-        vertices = [
-            f"({vertex.x},{vertex.y})" for vertex in face.bounding_poly.vertices
-        ]
-
-        print("face bounds: {}".format(",".join(vertices)))
-
     if response.error.message:
         raise Exception(
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
+    
+    cantidadFaces = len(faces)
 
+    print(cantidadFaces)
+
+    if cantidadFaces > 1 or cantidadFaces == 0:
+        return -1
+    else:
+        return faces[0].detection_confidence
