@@ -159,16 +159,23 @@ def list_docs(request):
 
             messages.success(request, 'Archivo subido correctamente')
 
+            documentosSubidos = DocumentoCarga.objects.all()
             docsExitosos = True
+            message = "Los archivos se han subido con exito"
+            context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post": True}
             
-            return HttpResponseRedirect(reverse('confirmacion'))
+            return render(request, 'documentosCarga.html',context)  
         
         else:
+            documentosSubidos = DocumentoCarga.objects.all()
             docsExitosos = False
-            return render(request, 'docsFallidos.html')
+            message = "Ha ocurrido un problema, vuelve a intentarlo"
+            context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
+            
+            return render(request, 'documentosCarga.html', context)
     else:
             documentosSubidos = DocumentoCarga.objects.all()
-            context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos}
+            context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos, "post":False}
             return render(request, 'documentosCarga.html', context)   
           
 @csrf_exempt
