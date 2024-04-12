@@ -194,7 +194,6 @@ def list_docs_id(request,docId):
         documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
         return HttpResponse(documentoCarga, 'application/json')
 
-
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
     return render(request, 'indexDocumentos.html')
