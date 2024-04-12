@@ -135,6 +135,7 @@ def list_docs(request):
 
             for f in ccFrontal:
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
+                instanciaCcFrontal.tipo = 'ccFrontal'
                 print("\n\nInstancia: ", instanciaCcFrontal)
                 asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                 instanciaCcFrontal.save()
@@ -142,16 +143,19 @@ def list_docs(request):
                 
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
+                instanciaCcTrasera.tipo = 'ccTrasera'
                 asignarScoreG(instanciaCcTrasera, 'ccTrasera')
                 instanciaCcTrasera.save()
                 
             for f in desprendiblePago1:
                 instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
+                instanciaDesprendiblePago1.tipo = 'desprendiblePago'
                 asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
                 instanciaDesprendiblePago1.save()
 
             for f in desprendiblePago2:
                 instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
+                instanciaDesprendiblePago2.tipo = 'desprendiblePago'
                 asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
                 instanciaDesprendiblePago2.save()
 
@@ -427,18 +431,6 @@ def detect_faces(file):
         "LIKELY",
         "VERY_LIKELY",
     )
-    print("Faces:")
-
-    for face in faces:
-        print(f"anger: {likelihood_name[face.anger_likelihood]}")
-        print(f"joy: {likelihood_name[face.joy_likelihood]}")
-        print(f"surprise: {likelihood_name[face.surprise_likelihood]}")
-
-        vertices = [
-            f"({vertex.x},{vertex.y})" for vertex in face.bounding_poly.vertices
-        ]
-
-        print("face bounds: {}".format(",".join(vertices)))
 
     if response.error.message:
         raise Exception(

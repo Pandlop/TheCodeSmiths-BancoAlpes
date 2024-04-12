@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'reportes',
     'solicitudes',
     'usuarios',
+    'empleados'
 ]
 
 MIDDLEWARE = [
@@ -95,7 +97,7 @@ DATABASES = {
         "PASSWORD": "codesmiths",
         # "HOST": "10.128.0.6",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     },
     'validacion_docsbd': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -104,7 +106,7 @@ DATABASES = {
         "PASSWORD": "codesmiths",
         # "HOST": "10.128.0.7",
         "HOST": "localhost",
-        "PORT": "5434",
+        "PORT": "5432",
     }
 
 }
@@ -145,7 +147,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

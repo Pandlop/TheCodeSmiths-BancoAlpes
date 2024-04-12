@@ -1,0 +1,75 @@
+
+main {
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+#cargarDocumentos {
+    padding: 1em;
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    
+}
+
+/* Titulo card carga docs */
+.headerCard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.headerCard h2, .headerCard a {
+    color: black;
+    text-decoration: none;
+    padding: 0 1em 1em 1em;
+}
+
+.centerDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+form input[type="file"]::file-selector-button{
+    padding: 0.5em 1em;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    margin-right: 1em;
+}
+
+form input[type="file"]::file-selector-button:hover{
+    cursor: pointer;
+    background-color: #f3f4f6;
+}
+
+#cargaDocsBtn {
+    color: white;
+    padding: 0.5em 1em;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #3a86ff;
+}
+
+#cargaDocsBtn:hover {
+    cursor: pointer;
+    background-color: #8ecae6;
+}
+
+
+

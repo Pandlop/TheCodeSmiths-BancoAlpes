@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    {% load static %}
+    {% load bootstrap5 %}
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="{% static 'documentosCarga.js' %}"></script>  
+</head>
+
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="">Revisar Documentos</a>
+            <a href="/empleados/logout/"><button type="button">Cerrar sesión</button></a>
+        </div>
+
+    </nav>
+
+    <main style="margin-top: 1rem;">
+        <section id="login">
+            <div class="headerCard">
+                <h2>Revisar documentos</h2>
+            </div>
+            <div id="bodyCard">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documentos %}
+                      <tr>
+                        <th scope="row">{{doc.id}}</th>
+                        <td>{{doc.tipo}}</td>
+                        <td>{{doc.archivo}}</td>
+                        <td><img src="{{ doc.archivo.url }}" alt="{{doc.archivo}}"></td>
+
+
+                        {% if doc.estado == -1 %}
+                        <td><i class="material-icons">cancel</i></td>
+                        {% elif doc.estado == 0 %}
+                        <td><i class="material-icons">cancel</i></td>
+                        {% elif doc.estado == 1 %}
+                        <td><i class="material-icons">quick_reference</i></td>
+                        {% else %}
+                        <td><i class="material-icons">check</i></td>
+                        {% endif %}
+
+
+                        <td>
+                            <form action="{% url 'aprobar' doc.id %}" method="post">
+                                {% csrf_token %}
+                            <button type="submit">Aprobar</button>
+                        </form>
+                        <form action="{% url 'rechazar' doc.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Rechazar</button>
+                        </form>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                
+            </div>
+
+        </section>
+    </main>
+
+
+    <!-- Incluir Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+
+</html>
