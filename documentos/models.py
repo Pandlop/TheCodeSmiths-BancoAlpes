@@ -15,7 +15,7 @@ class DocumentoFirma(models.Model):
 class DocumentoCarga(models.Model):
     score = models.FloatField(null=True)
     archivo = models.FileField(null=False,default=None)
-    estado = models.IntegerField(null=False, default=-1)
+    estado = models.IntegerField(null=False, default=1)
     tipo = models.CharField(max_length=50, null=True)
 
     def __str__(self):

@@ -47,12 +47,10 @@
                         <td><img class="imgDoc" src="{{ doc.archivo.url }}" alt="{{doc.archivo}}" ></td>
 
 
-                        {% if doc.estado == -1 %}
-                        <td><i class="material-icons">cancel</i></td>
-                        {% elif doc.estado == 0 %}
+                        {% if doc.estado == 0 %}
                         <td><i class="material-icons">cancel</i></td>
                         {% elif doc.estado == 1 %}
-                        <td><i class="material-icons">quick_reference</i></td>
+                        <td><i class="material-icons">pending_actions</i></td>
                         {% else %}
                         <td><i class="material-icons">check_circle</i></td>
                         {% endif %}

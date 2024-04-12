@@ -8,22 +8,3 @@ function eliminarDoc(docId, row){
     .then(data => console.log(data[0]))
     .catch(error => console.log(error));
 }
-
-function editarDoc(docId, row){
-    let table = row.parentNode.parentNode;
-
-    let doc;
-    let docElem = document.getElementById("updateFile");
-    docElem.addEventListener('change', function(event) {
-        if(doc){
-            fetch(`${docId}`,{
-                method:"PUT",
-                body:doc
-            })
-            .then(response => response.json())
-            .then(data => console.log(data[0]))
-            .catch(error => console.log(error));
-        }   
-    });
-    
-}

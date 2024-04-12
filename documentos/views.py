@@ -14,7 +14,7 @@ import requests
 import threading
 import io
 import os
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 import os
@@ -74,24 +74,32 @@ def list_docs(request):
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
                 instanciaCcFrontal.tipo = 'ccFrontal'
                 asignarScoreG(instanciaCcFrontal, 'ccFrontal')
+                if(instanciaCcFrontal.score <= 0.6):
+                    instanciaCcFrontal.estado = 0 
                 instanciaCcFrontal.save()     
                 
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
                 instanciaCcTrasera.tipo = 'ccTrasera'
                 asignarScoreG(instanciaCcTrasera, 'ccTrasera')
+                if(instanciaCcTrasera.score <= 0.6):
+                    instanciaCcTrasera.estado = 0 
                 instanciaCcTrasera.save()
                 
             for f in desprendiblePago1:
                 instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
                 instanciaDesprendiblePago1.tipo = 'desprendiblePago'
                 asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
+                if(instanciaDesprendiblePago1.score <= 0.6):
+                    instanciaDesprendiblePago1.estado = 0 
                 instanciaDesprendiblePago1.save()
 
             for f in desprendiblePago2:
                 instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
                 instanciaDesprendiblePago2.tipo = 'desprendiblePago'
                 asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
+                if(instanciaDesprendiblePago2.score <= 0.6):
+                    instanciaDesprendiblePago2.estado = 0 
                 instanciaDesprendiblePago2.save()
 
 
@@ -292,3 +300,4 @@ def detect_faces(file):
         return -1
     else:
         return faces[0].detection_confidence
+    

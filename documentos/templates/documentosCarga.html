@@ -54,7 +54,6 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th></th>
                                 <th>Nombre</th>
                                 <th>Tipo</th>
                                 <th>Score</th>
@@ -65,17 +64,18 @@
                             {% for doc in documentosSubidos %}
                             <tr>
                                 <td class="icon" onclick="eliminarDoc('{{doc.id}}',this.parentNode)"><i class="material-icons">delete</i></td>
-                                <td class="icon" onclick="editarDoc('{{doc.id}}',this.parentNode)">
-                                    <label for="updateFile" style="cursor: pointer;">
-                                        <i class="material-icons">edit</i>
-                                    </label>
-                                    <input type="file" id="updateFile"  style="display: none;" accept="image/png, image/jpeg, image/jpg">
-                                    
-                                </td>
+        
                                 <td>{{doc.archivo}}</td>
                                 <td>{{doc.tipo}}</td>
                                 <td>{{doc.score}}</td>
-                                <td>{{doc.estado}}</td>
+
+                                {% if doc.estado == 0 %}
+                                <td><i class="material-icons">cancel</i></td>
+                                {% elif doc.estado == 1 %}
+                                <td><i class="material-icons">pending_actions</i></td>
+                                {% else %}
+                                <td><i class="material-icons">check_circle</i></td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>

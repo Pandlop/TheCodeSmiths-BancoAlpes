@@ -37,7 +37,7 @@ def vistaDocs(request):
             # documento.save()
             return render(request, 'vistaEmpleadoDocs.html')
         else:
-            documentos = DocumentoCarga.objects.all()
+            documentos = DocumentoCarga.objects.filter(estado=1)
             return render(request, 'vistaEmpleadoDocs.html', {'documentos': documentos})
     else:
         return redirect('login_view')
@@ -51,7 +51,6 @@ def logout_view(request):
 
 def aprobar(request, id):
     """
-    -1 -> No revisado
     0 -> Rechazado
     1 -> En revisión
     2 -> Aprobado
@@ -64,7 +63,6 @@ def aprobar(request, id):
 
 def rechazar(request, id):
     """
-    -1 -> No revisado
     0 -> Rechazado
     1 -> En revisión
     2 -> Aprobado
