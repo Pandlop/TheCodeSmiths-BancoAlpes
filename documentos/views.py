@@ -14,6 +14,10 @@ import requests
 import threading
 import io
 import os
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.contrib import messages
+import os
 
 from google.cloud import vision
 import base64
@@ -26,11 +30,6 @@ def file_list(request):
     files = DocumentoCarga.objects.all()
     return render(request, 'documentosCarga_list.html', {'files': files})
 
-
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib import messages
-import os
 
 
 def list_docs(request):
@@ -61,7 +60,7 @@ def list_docs(request):
             todos_png = all(os.path.splitext(f.name)[1].lower() == '.png' for lista in archivos_listas for f in lista)
             
             if not todos_png:
-                messages.error(request, 'Todos los archivos deben ser PNG.')
+                # messages.error(request, 'Todos los archivos deben ser PNG.')
                 return render(request, 'documentosCarga.html', {
                     'documentosSubidos': DocumentoCarga.objects.all(),
                     'docsExitosos': False,
@@ -96,7 +95,7 @@ def list_docs(request):
                 instanciaDesprendiblePago2.save()
 
 
-            messages.success(request, 'Archivo subido correctamente')
+            # messages.success(request, 'Archivo subido correctamente')
 
             documentosSubidos = DocumentoCarga.objects.all()
             docsExitosos = True
@@ -139,13 +138,6 @@ def list_docs_id(request,docId):
 def indexDocumentos(request):
     return render(request, 'indexDocumentos.html')
 
-def docsFallidos(request):
-    return render(request, 'docsFallidos.html')
-
-def confirmacion(request):
-    return render(request, 'pantallaConfirmacion.html')
-
-
 
 # Funcion para asignar un score a un documento con el api de google
 def asignarScoreG(instancia, tipoDoc):
@@ -183,12 +175,9 @@ def asignarScoreG(instancia, tipoDoc):
 
         
 
-        print("\n\nInstancia.archivo: ", instancia.archivo)
 
         text = detect_text(instancia.archivo)
-        print("Instancia.archivo: ", instancia.archivo)
         scoreFace = detect_faces(instancia.archivo)
-        print("ScoreFace: ", scoreFace)
 
         palabraClave = {
             'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,

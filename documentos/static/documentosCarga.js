@@ -15,7 +15,6 @@ function editarDoc(docId, row){
     let doc;
     let docElem = document.getElementById("updateFile");
     docElem.addEventListener('change', function(event) {
-        doc = event.target.files[0];
         if(doc){
             fetch(`${docId}`,{
                 method:"PUT",

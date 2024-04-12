@@ -7,12 +7,11 @@ main {
     flex-wrap: wrap;
 }
 
-
-#cargarDocumentos {
+#login, #loginForm{
     padding: 1em;
     width: 100%;
     height: 100%;
-    max-width: 400px;
+    max-width: 90%;
     background-color: white;
     border: 1px solid black;
     border-radius: 15px;
@@ -20,6 +19,10 @@ main {
     flex-direction: column;
     overflow: scroll;
     
+}
+
+#loginForm {
+    max-width: 40%;
 }
 
 /* Titulo card carga docs */
@@ -58,18 +61,39 @@ form input[type="file"]::file-selector-button:hover{
     background-color: #f3f4f6;
 }
 
-#cargaDocsBtn {
+button {
     color: white;
     padding: 0.5em 1em;
     border: 1px solid black;
     border-radius: 10px;
-    background-color: #3a86ff;
+    background-color: black;
 }
 
-#cargaDocsBtn:hover {
+button:hover {
     cursor: pointer;
     background-color: #8ecae6;
 }
 
+.imgDoc {
+    width: auto;
+    height: auto;
+}
 
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
 
+table th {
+    background-color: darkgray
+    ;
+}
+table td, table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table td {
+    width: 50%;
+    word-wrap:break-word;
+}
