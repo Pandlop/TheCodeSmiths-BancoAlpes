@@ -92,10 +92,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 import requests
 import threading
+import io
 import os
 
 from google.cloud import vision
+import base64
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
 
 
 
@@ -135,6 +138,8 @@ def list_docs(request):
                 print("\n\nInstancia: ", instanciaCcFrontal)
                 asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                 instanciaCcFrontal.save()
+                
+                
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
                 asignarScoreG(instanciaCcTrasera, 'ccTrasera')
@@ -280,6 +285,8 @@ def confirmacion(request):
 # Funcion para asignar un score a un documento con el api de google
 def asignarScoreG(instancia, tipoDoc):
 
+    
+
     if tipoDoc == 'desprendiblePago':
 
         text = detect_text(instancia.archivo)
@@ -311,6 +318,8 @@ def asignarScoreG(instancia, tipoDoc):
     
 
     elif tipoDoc == "ccFrontal":
+
+        
 
         print("\n\nInstancia.archivo: ", instancia.archivo)
 
@@ -376,16 +385,11 @@ def asignarScoreG(instancia, tipoDoc):
 
 def detect_text(file): # file es un archivo, no un path
     """Detects text in the file."""
-    from google.cloud import vision
-
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
 
     client = vision.ImageAnnotatorClient()
 
     content = file.read()
 
-    print("\n\n\n\file.read() detect text: ", file.read())
-    
     image = vision.Image(content=content)
 
     response = client.text_detection(image=image)
@@ -398,42 +402,52 @@ def detect_text(file): # file es un archivo, no un path
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
+    
+    file.seek(0)
     return text
 
-
-
-
-
-def detect_faces(file): # file es un archivo, no un path
+def detect_faces(file):
     """Detects faces in an image."""
-
-    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
-
-    print("\n\nfile dentro de detect faces: ", file)
-    print("file.read(): ", file.read())
-
+    from google.cloud import vision
 
     client = vision.ImageAnnotatorClient()
 
     content = file.read()
 
-    file.read()
-
-    print("\n\n\n\ncontent: ", content)
-
     image = vision.Image(content=content)
 
-    print(image)
-
-    response = client.face_detection(image=image, max_results=2)
+    response = client.face_detection(image=image)
     faces = response.face_annotations
+
+    # Names of likelihood from google.cloud.vision.enums
+    likelihood_name = (
+        "UNKNOWN",
+        "VERY_UNLIKELY",
+        "UNLIKELY",
+        "POSSIBLE",
+        "LIKELY",
+        "VERY_LIKELY",
+    )
+    print("Faces:")
+
+    for face in faces:
+        print(f"anger: {likelihood_name[face.anger_likelihood]}")
+        print(f"joy: {likelihood_name[face.joy_likelihood]}")
+        print(f"surprise: {likelihood_name[face.surprise_likelihood]}")
+
+        vertices = [
+            f"({vertex.x},{vertex.y})" for vertex in face.bounding_poly.vertices
+        ]
+
+        print("face bounds: {}".format(",".join(vertices)))
 
     if response.error.message:
         raise Exception(
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
-    
+    file.seek(0)
+
     cantidadFaces = len(faces)
 
     print(cantidadFaces)
@@ -442,66 +456,3 @@ def detect_faces(file): # file es un archivo, no un path
         return -1
     else:
         return faces[0].detection_confidence
-
-
-
-# def detect_facesV2(file):
-#     """Detects faces in an image."""
-#     from google.cloud import vision
-
-#     client = vision.ImageAnnotatorClient()
-
-#     # content = file.read()
-
-#     with open(file.path, "rb") as f:
-#         imagen = f.read()
-
-#     cadena_base64 = imagen_a_base64(imagen)
-
-#     url = "https://vision.googleapis.com/v1/images:annotate"
-
-#     # Cuerpo de la solicitud
-#     body = {
-#         "requests": [
-#             {
-#             "features": [
-#                 {
-#                 "maxResults": 10,
-#                 "type": "FACE_DETECTION"
-#                 }
-#             ],
-#             "image": {
-#                 "content": cadena_base64
-#             }
-#             }
-#         ]
-#         }
-
-
-#     # image = vision.Image(content=content)
-
-#     response = requests(url, json=body, access_token = "AIzaSyDoOZ3NzWVStHWJfLvfbVY4hRwpTz2wCFo")
-#     faces = response.face_annotations
-
-#     if response.error.message:
-#         raise Exception(
-#             "{}\nFor more info on error messages, check: "
-#             "https://cloud.google.com/apis/design/errors".format(response.error.message)
-#         )
-    
-#     cantidadFaces = len(faces)
-
-#     print(cantidadFaces)
-
-#     if cantidadFaces > 1 or cantidadFaces == 0:
-#         return -1
-#     else:
-#         return faces[0].detection_confidence
-
-
-
-import base64
-
-def imagen_a_base64(imagen):
-    imagen_codificada = base64.b64encode(imagen)
-    return imagen_codificada.decode('utf-8')
