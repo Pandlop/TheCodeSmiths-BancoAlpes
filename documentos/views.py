@@ -18,20 +18,19 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 import os
-
 from google.cloud import vision
 import base64
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
 
 
-
+@csrf_exempt
 def file_list(request):
     files = DocumentoCarga.objects.all()
     return render(request, 'documentosCarga_list.html', {'files': files})
 
 
-
+@csrf_exempt
 def list_docs(request):
     
     docsExitosos = False
@@ -141,12 +140,12 @@ def list_docs_id(request,docId):
         documentoCarga = serializers.serialize('json', [documentoCarga_dto,])
         return HttpResponse(documentoCarga, 'application/json')
 
-
+@csrf_exempt
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
     return render(request, 'indexDocumentos.html')
 
-
+@csrf_exempt
 # Funcion para asignar un score a un documento con el api de google
 def asignarScoreG(instancia, tipoDoc):
 
@@ -236,7 +235,7 @@ def asignarScoreG(instancia, tipoDoc):
 
         instancia.save()
         
-
+@csrf_exempt
 # Google API document analysis methods
 def detect_text(file): # file es un archivo, no un path
     """Detects text in the file."""
@@ -262,6 +261,7 @@ def detect_text(file): # file es un archivo, no un path
     file.seek(0)
     return text
 
+@csrf_exempt
 def detect_faces(file):
     """Detects faces in an image."""
     from google.cloud import vision
