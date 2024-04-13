@@ -9,3 +9,6 @@ from django.template import loader
 
 def landingPage(request):
     return render(request, 'landingPage.html')
+
+def healthCheck(request):
+    return HttpResponse('ok')
