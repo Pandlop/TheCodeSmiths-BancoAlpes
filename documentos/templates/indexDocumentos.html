@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mainCargaDocs.css' %}">
+    
+
+    <style>
+        body, html {
+          height: 100%;
+        }
+    
+        .rounded-button {
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .contenedor_boton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+      </style>
+
+
+</head>
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="">TDC</a>
+            <a href="/documentos/documentosCarga">Cargar Documentos</a>
+            <a href="">Firmar</a>
+        </div>
+        
+    </nav>
+
+    <div>
+        <h1>Bienvenido a Banco Alpes</h1>
+        <p>Adjunta tus documentos</p>
+    </div>
+
+    <div class="contenedor_boton">
+        <a href="/documentos/documentosCarga"><button class="rounded-button">Adjuntar documentos</button></a>
+      </div>
+    
+    
+</body>
+</html>

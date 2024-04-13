@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'vistaDocs.css' %}">
+    <link rel="stylesheet" href="{% static 'mainVistaDocs.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="">Revisar Documentos</a>
+            <a href="/empleados/logout/"><button type="button">Cerrar sesión</button></a>
+        </div>
+
+    </nav>
+
+    <main style="margin-top: 1rem;">
+        <section id="login">
+            <div class="headerCard">
+                <h2>Revisar documentos</h2>
+            </div>
+            <div>
+                <table id="tablaDocs" class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Nombre</th>
+                        <th>Score</th>
+                        <th>Estado</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documentos %}
+                      <tr>
+                        <td>{{doc.id}}</td>
+                        <td>{{doc.tipo}}</td>
+                        <td>{{doc.archivo}}</td>
+                        <td><img class="imgDoc" src="{{ doc.archivo.url }}" alt="{{doc.archivo}}" ></td>
+
+
+                        {% if doc.estado == 0 %}
+                        <td><i class="material-icons">cancel</i></td>
+                        {% elif doc.estado == 1 %}
+                        <td><i class="material-icons">pending_actions</i></td>
+                        {% else %}
+                        <td><i class="material-icons">check_circle</i></td>
+                        {% endif %}
+
+
+                        <td>
+                            <form action="{% url 'aprobar' doc.id %}" method="post">
+                                {% csrf_token %}
+                            <button type="submit">Aprobar</button>
+                        </form>
+                        <br>
+                        <form action="{% url 'rechazar' doc.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Rechazar</button>
+                        </form>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                
+            </div>
+
+        </section>
+    </main>
+
+
+</body>
+
+
+</html>

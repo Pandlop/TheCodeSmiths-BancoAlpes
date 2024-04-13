@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    {% load bootstrap5 %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mainVistaDocs.css' %}">
+    <link rel="stylesheet" href="{% static 'vistaDocs.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="{% static 'documentosCarga.js' %}"></script>  
+</head>
+
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+    </nav>
+
+    <main style="margin-top: 1rem;">
+        <section id="loginForm">
+            <div class="headerCard">
+                <h2>Login</h2>
+                <a href="">X</a>
+            </div>
+            <div id="bodyCard">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form}}
+                    <h5>Ingrese su usuario:</h5>
+                    <input type="text" name="username">
+                    <h5>Ingrese su contraseña:</h5>
+                    <input type="password" name="password">
+                    <button type="submit">Enviar</button>
+                </form>
+                
+            </div>
+
+            
+
+        </section>
+    </main>
+
+    
+    <!-- Incluir Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+
+</html>

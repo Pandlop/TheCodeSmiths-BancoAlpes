@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,10 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap5',
+    'landing',
     'documentos',
     'reportes',
     'solicitudes',
-    'usuarios'
+    'usuarios',
+    'empleados'
 ]
 
 MIDDLEWARE = [
@@ -78,15 +82,35 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "persistenciabancoalpes",
+    #     'USER': "juanlopez",
+    #     "PASSWORD": "Codesmiths",
+    #     "HOST": "localhost",
+    #     "PORT": "5432",
+    # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia-db",
-        'USER': "codesmiths-user",
+        'NAME': "persistencia_db",
+        'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.32.208.3",
+        "HOST": "10.128.0.6",
+        #"HOST": "localhost",
+        "PORT": "5432",
+    },
+    'validacion_docsbd': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "validaciondocsbd",
+        'USER': "codesmiths_user",
+        "PASSWORD": "codesmiths",
+        # "HOST": "10.128.0.7",
+        "HOST": "localhost",
         "PORT": "5432",
     }
+
 }
+
 
 
 # Password validation
@@ -123,7 +147,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -15,7 +15,12 @@ def create_documentoCarga(doc):
 
 def update_documentoCarga(doc_pk, new_doc):
     documentoCarga = get_documentoCarga(doc_pk)
-    documentoCarga.archivo = new_doc["archivo"]
-    documentoCarga.score = new_doc["score"]
+    documentoCarga.archivo = new_doc.archivo
+    documentoCarga.score = new_doc.score
     documentoCarga.save()
     return documentoCarga
+
+def delete_documentoCarga(doc_pk):
+    documentoCarga = get_documentoCarga(doc_pk)
+    documentoCarga.delete()
+    return None

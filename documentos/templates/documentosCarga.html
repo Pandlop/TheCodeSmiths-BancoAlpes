@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banco Alpes</title>
-    <link rel="stylesheet" href="{% static 'main.css' %}">
-     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
+    {% load bootstrap5 %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mainCargaDocs.css' %}">
+    <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="{% static 'documentosCarga.js' %}"></script>  
 </head>
+
 <body>
     <nav>
         <h1>Banco Alpes</h1>
@@ -16,23 +21,92 @@
             <a href="/documentos/documentosCarga">Cargar Documentos</a>
             <a href="">Firmar</a>
         </div>
-        
+
     </nav>
-    <main>
+
+    <main style="margin-top: 1rem;">
         <section id="cargarDocumentos">
             <div class="headerCard">
                 <h2>Cargar Documentos</h2>
-                <a href="/index.html">X</a>
+                <a href="">X</a>
             </div>
-            <form  method="post">
-                <input type="file" multiple>
-                <button id="cargaDocsBtn">Enviar</button>
+            <div id="bodyCard">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form}}
+                    <h4>Adjunte la cara frontal de su documento de identidad</h3>
+                    <input type="file" name="ccFrontal" accept="image/png">
+                    <br>
+                    <h4>Adjunte la cara trasera de su documento de identidad</h3>
+                    <input type="file" name="ccTrasera" accept="image/png">
+                    <br>
+                    <h4>Adjunte el primer desprendible de pago</h3>
+                    <input type="file" name="desprendiblePago1" accept="image/png">
+                    <br>
+                    <h4>Adjunte el segundo desprendible de pago</h3>
+                    <input type="file" name="desprendiblePago2" accept="image/png">
+                    <button type="submit">Enviar</button>
+                </form>
+    
+                <div style="margin-top: 10px; padding: 0 1em;">
+                    <h3 style="text-align: center;">Documentos subidos</h3>
+                    <table id="tablaDocs" class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Score</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documentosSubidos %}
+                            <tr>
+                                <td class="icon" onclick="eliminarDoc('{{doc.id}}',this.parentNode)"><i class="material-icons">delete</i></td>
+        
+                                <td>{{doc.archivo}}</td>
+                                <td>{{doc.tipo}}</td>
+                                <td>{{doc.score}}</td>
+
+                                {% if doc.estado == 0 %}
+                                <td><i class="material-icons">cancel</i></td>
+                                {% elif doc.estado == 1 %}
+                                <td><i class="material-icons">pending_actions</i></td>
+                                {% else %}
+                                <td><i class="material-icons">check_circle</i></td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    
+                </div>
                 
-            </form>
+            </div>
+
             
 
         </section>
     </main>
-    
+
+    {% if docsExitosos or post%}
+
+    <script>
+        alert("{{message}}");
+    </script>
+
+    {% endif %}
+
+    <!-- Incluir Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <footer>
+        <a target="_blank" href="https://icons8.com/icon/67884/delete">Delete</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+    </footer>
+
 </body>
+
+
 </html>
