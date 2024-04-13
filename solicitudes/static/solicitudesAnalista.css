@@ -1,0 +1,87 @@
+
+main {
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#solicitudes{
+    padding: 1em;
+    width: 100%;
+    height: 100%;
+    max-width: 90%;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    
+}
+
+#loginForm {
+    max-width: 40%;
+}
+
+/* Titulo card carga docs */
+.headerCard {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.headerCard h2, .headerCard a {
+    color: black;
+    text-decoration: none;
+    padding: 0 1em 1em 1em;
+}
+
+.centerDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th {
+    background-color: darkgray
+    ;
+}
+table td, table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table td {
+    width: 50%;
+    word-wrap:break-word;
+}
+.datos label {
+    display: block;
+    padding: 1em;
+    margin-bottom: 1em;
+    border: 1px solid black;
+    border-radius: 12px;
+}
+
+.datos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.headerDato {
+    font-weight: 700;
+}

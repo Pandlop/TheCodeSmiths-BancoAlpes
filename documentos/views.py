@@ -9,7 +9,6 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-
 import requests
 import threading
 import io
@@ -114,7 +113,22 @@ def list_docs(request):
         else:
             documentosSubidos = DocumentoCarga.objects.all()
             docsExitosos = False
-            message = "Ha ocurrido un problema, vuelve a intentarlo"
+            
+            # El formulario no es válido, extraer el primer error
+            primer_error = None
+
+            # Buscar el primer error de un campo específico
+            for field in form:
+                if field.errors:
+                    primer_error = str(field.errors[0])
+                    break
+
+            # Si no hay errores de campo, verificar errores generales del formulario
+            if not primer_error:
+                if form.non_field_errors():
+                    primer_error = str(form.non_field_errors()[0])
+
+            message = primer_error
             context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
             
             return render(request, 'documentosCarga.html', context)
