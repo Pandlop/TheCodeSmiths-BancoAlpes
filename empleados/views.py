@@ -4,10 +4,10 @@ from django.contrib import messages
 
 from .models import Empleado
 from documentos.models import DocumentoCarga
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -26,7 +26,7 @@ def login_view(request):
         else:
             return render(request, 'login.html')
         
-
+@csrf_exempt
 def vistaDocs(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -43,12 +43,12 @@ def vistaDocs(request):
         return redirect('login_view')
 
     
-
+@csrf_exempt
 def logout_view(request):
     logout(request)
     return redirect('login_view')
 
-
+@csrf_exempt
 def aprobar(request, id):
     """
     0 -> Rechazado
@@ -60,7 +60,7 @@ def aprobar(request, id):
     documento.save()
     return redirect('vistaDocs')
 
-
+@csrf_exempt
 def rechazar(request, id):
     """
     0 -> Rechazado
