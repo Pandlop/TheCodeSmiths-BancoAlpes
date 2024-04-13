@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'mainSolicitudes.css' %}">
+    <link rel="stylesheet" href="{% static 'solicitudesAnalista.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="">TDC</a>
+            <a href="/documentos/documentosCarga">Cargar Documentos</a>
+            <a href="">Firmar</a>
+        </div>
+    </nav>
+
+    <main style="margin-top: 1rem;">
+        <section id="solicitudes">
+            <div class="headerCard">
+                <h2>Revisar solicitudes</h2>
+            </div>
+            <div>
+                <div class="datos">
+                    <label for="totalSolicitudes">
+                        <span class="headerDato">Total de solicitudes: </span>{{totalSolicitudes}}
+                    </label>
+                    <label for="totalAprobadas">
+                        <span class="headerDato">Solicitudes aprobadas: </span>{{totalAprobadas}}
+                    </label>
+                    <label for="totalAumento">
+                        <span class="headerDato">Aumento de clientes: </span>{{totalAumento}}
+                    </label>
+
+                </div>
+                
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Año</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for sol in solicitudes %}
+                      <tr>
+                        <td>{{sol.id}}</td>
+                        <td>{{sol.fecha_solicitud}}</td>
+                        <td>{{sol.anio_solicitud}}</td>
+
+                        {% if sol.estado == 0 %}
+                        <td><i class="material-icons">pending_actions</i></td>
+                        {% elif sol.estado == 1 %}
+                        <td><i class="material-icons">cancel</i></td>
+                        {% else %}
+                        <td><i class="material-icons">check_circle</i></td>
+                        {% endif %}
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                
+            </div>
+
+        </section>
+    </main>
+    
+</body>
+</html>

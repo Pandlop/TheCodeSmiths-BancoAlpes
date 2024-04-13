@@ -19,5 +19,5 @@ class DocumentoCarga(models.Model):
     tipo = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return '{} {}'.format(self.score,self.archivo)
+        return '{}'.format(self.archivo)
     

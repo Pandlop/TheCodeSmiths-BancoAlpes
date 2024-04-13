@@ -9,7 +9,6 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-
 import requests
 import threading
 import io
