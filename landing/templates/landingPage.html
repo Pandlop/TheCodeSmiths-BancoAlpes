@@ -49,6 +49,11 @@
         
     </nav>
 
+    {% if estaLogueado %}
+        <p>Hola, {{ session.userinfo.nickname }}. ¡Bienvenido a Banco Alpes!</p>
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
+    {% endif %}
+
     <div class="">
         <h1>Bienvenido a Banco Alpes</h1>
         <h2>¡Descubre una nueva experiencia con nuestra nueva Tarjeta de Crédito!</h2>
@@ -81,7 +86,7 @@
     </div>
 
     <div class="contenedor_boton">
-        <a href="documentos"><button class="rounded-button">Deseo adquirir una tarjeta de crédito</button></a>
+        <a href="/documentos"><button class="rounded-button">Deseo adquirir una tarjeta de crédito</button></a>
       </div>
     
     

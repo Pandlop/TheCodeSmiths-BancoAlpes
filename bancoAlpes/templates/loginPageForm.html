@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    <link rel="stylesheet" href="{% static 'landing.css' %}">
+
+    <style>
+        /* Estilo adicional para centrar el contenido */
+        body, html {
+          height: 100%;
+        }
+    
+        /* body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        } */
+    
+        .rounded-button {
+          border-radius: 10px; /* Ajusta el radio de las esquinas */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .contenedor_boton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+        }
+
+      </style>
+
+
+</head>
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="#">TDC</a>
+            <a href="/documentos/documentosCarga">Cargar Documentos</a>
+            <a href="#">Firmar</a>
+        </div>
+        
+    </nav>
+
+    <div class="" style="margin: 2rem;">
+        <h1>Inicio de sesión</h1>
+        <h2>Completa el formulario</h2>
+        <br>
+
+        <form action="submit_login_info/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <label for="firstName">Nombre:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Apellidos:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div>
+                <label for="pais">País</label>
+                <input type="text" id="pais" name="pais" required>
+            </div>
+            <div>
+                <label for="ciudad">Ciudad</label>
+                <input type="text" id="ciudad" name="ciudad" required>
+            </div>
+            <div>
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit">Continuar</button>
+        </form>
+
+        <br>
+
+    </div>
+
+    <!-- <div class="contenedor_boton">
+        <a href="loginPageForm"><button class="rounded-button">Aceptar terminos y condiciones</button></a>
+        <a href="/landingPage"><button class="rounded-button" style="margin-left: 2rem;">Volver</button></a>
+      </div> -->
+    
+    
+</body>
+</html>

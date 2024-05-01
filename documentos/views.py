@@ -20,6 +20,9 @@ from django.contrib import messages
 import os
 from google.cloud import vision
 import base64
+from django.contrib.auth.decorators import login_required
+
+
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "documentos/keys/bancoalpes-417404-9b703b711492.json"
 
@@ -202,7 +205,14 @@ def list_docs_id(request,docId):
 @csrf_exempt
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
-    return render(request, 'indexDocumentos.html')
+
+    print(request.session.get("user"))
+    
+    if request.session.get("user") is None:
+        return redirect(reverse("loginPage"))
+    else: 
+        context = {"session": request.session.get("user")}
+        return render(request, 'indexDocumentos.html', context)
 
 @csrf_exempt
 # Funcion para asignar un score a un documento con el api de google
