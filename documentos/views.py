@@ -209,7 +209,7 @@ def indexDocumentos(request):
     print(request.session.get("user"))
     
     if request.session.get("user") is None:
-        return redirect(reverse("loginPage"))
+        return redirect(reverse("login"))
     else: 
         context = {"session": request.session.get("user")}
         return render(request, 'indexDocumentos.html', context)
