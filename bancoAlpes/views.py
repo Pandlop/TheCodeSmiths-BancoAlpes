@@ -27,7 +27,6 @@ oauth.register(
     },
     server_metadata_url=f"https://{settings.AUTH0_DOMAIN}/.well-known/openid-configuration",
 )
-
 @csrf_exempt
 def login(request):
     print(request.session.get("login_info"), "desde login")
