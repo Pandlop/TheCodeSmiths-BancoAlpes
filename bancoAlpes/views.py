@@ -32,7 +32,7 @@ oauth.register(
 def login(request):
     print(request.session.get("login_info"), "desde login")
     
-    sleep(40)
+    sleep(10)
 
     return oauth.auth0.authorize_redirect(
         request, request.build_absolute_uri(reverse("callback")),
@@ -44,6 +44,8 @@ def callback(request):
     token = oauth.auth0.authorize_access_token(request)
 
     request.session["user"] = token
+
+    print("ya estoy saliendo del callback")
 
     return redirect(request.build_absolute_uri(reverse("loginPage")))
 
