@@ -42,7 +42,7 @@ def callback(request):
 
     request.session["user"] = token
 
-    return redirect(request.build_absolute_uri(reverse("login")))
+    return redirect(request.build_absolute_uri(reverse("loginPage")))
 
 @csrf_exempt
 def logout(request):
@@ -61,37 +61,7 @@ def logout(request):
 
 @csrf_exempt
 def submit_login_info(request):
-    
-    if request.method == "POST":
-        form = Login_Info(request.POST)
-
-        if form.is_valid():
-
-            firstName = form.cleaned_data.get('firstName')
-            lastName = form.cleaned_data.get('lastName')
-            pais = form.cleaned_data.get('pais')
-            ciudad = form.cleaned_data.get('ciudad')
-            email = form.cleaned_data.get('email')
-
-            # Guardar los datos en la sesion para mandarselos a auth0
-            request.session["login_info"] = {
-                "firstName": firstName,
-                "lastName": lastName,
-                "pais": pais,
-                "ciudad": ciudad,
-                "email": email,
-            }
-
-            print(request.session.get("login_info"), "desde submit_login_info")
-
-            # mandar a la pagina de login
-            return redirect(reverse("login"))
-    
-        else:
-            return redirect(reverse("loginPageForm"))
-        
-    else:
-        return redirect(reverse("loginPageForm"))
+    return redirect(reverse("login"))
 
 
 # Otras funciones ---------------------------------------------------------------
