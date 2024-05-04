@@ -126,8 +126,7 @@ DATABASES = {
         'NAME': "persistencia_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        # "HOST": "10.128.0.6",
-        "HOST": "localhost",
+        "HOST": "10.128.0.6",
         "PORT": "5432",
     },
     'validacion_docsbd': {
@@ -135,8 +134,7 @@ DATABASES = {
         'NAME': "validaciondocsbd",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        # "HOST": "10.128.0.7",
-        "HOST": "localhost",
+        "HOST": "10.128.0.7",
         "PORT": "5432",
     }
 
