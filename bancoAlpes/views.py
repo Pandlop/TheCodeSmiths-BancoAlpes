@@ -8,10 +8,12 @@ import json
 from authlib.integrations.django_client import OAuth
 from django.conf import settings
 from urllib.parse import quote_plus, urlencode
+from django.views.decorators.csrf import csrf_exempt
 
 
 
 # Cosas de autenticación -------------------------------------------------------
+
 
 oauth = OAuth()
 
@@ -25,6 +27,7 @@ oauth.register(
     server_metadata_url=f"https://{settings.AUTH0_DOMAIN}/.well-known/openid-configuration",
 )
 
+@csrf_exempt
 def login(request):
     print(request.session.get("login_info"), "desde login")
 
@@ -33,6 +36,7 @@ def login(request):
         connection = "sms",
     )
 
+@csrf_exempt
 def callback(request):
     token = oauth.auth0.authorize_access_token(request)
 
@@ -40,7 +44,7 @@ def callback(request):
 
     return redirect(request.build_absolute_uri(reverse("loginPage")))
 
-
+@csrf_exempt
 def logout(request):
     request.session.clear()
 
@@ -55,7 +59,7 @@ def logout(request):
         ),
     )
 
-
+@csrf_exempt
 def submit_login_info(request):
     
     if request.method == "POST":
@@ -104,7 +108,7 @@ def landingPage(request):
 
     return render(request, 'landingPage.html', context)
 
-
+@csrf_exempt
 def loginPage(request):
 
     estaLogueado = request.session.get("user") != None;
@@ -119,7 +123,7 @@ def loginPage(request):
     else:
         return render(request, 'loginPage.html')
     
-
+@csrf_exempt
 def loginPageForm(request):
     
     return render(request, 'loginPageForm.html')
@@ -129,6 +133,6 @@ def loginPageForm(request):
 def healthCheck(request):
     return HttpResponse('ok')
 
-
+@csrf_exempt
 def indexDocumentos(request):
     return render(request, 'indexDocumentos.html')
