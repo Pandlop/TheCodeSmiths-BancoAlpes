@@ -9,6 +9,7 @@ from authlib.integrations.django_client import OAuth
 from django.conf import settings
 from urllib.parse import quote_plus, urlencode
 from django.views.decorators.csrf import csrf_exempt
+from time import sleep
 
 
 
@@ -30,6 +31,8 @@ oauth.register(
 @csrf_exempt
 def login(request):
     print(request.session.get("login_info"), "desde login")
+    
+    sleep(40)
 
     return oauth.auth0.authorize_redirect(
         request, request.build_absolute_uri(reverse("callback")),
