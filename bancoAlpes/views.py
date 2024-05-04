@@ -33,11 +33,8 @@ oauth.register(
 
 @csrf_exempt
 def login(request):
-    sleep(19)
     print(request.session.get("login_info"), "desde login")
     
-    sleep(10)
-
     return oauth.auth0.authorize_redirect(
         request, request.build_absolute_uri(reverse("callback")),
         connection = "sms",
