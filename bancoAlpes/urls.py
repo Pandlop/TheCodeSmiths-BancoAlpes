@@ -23,8 +23,19 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.landingPage, name='landingPage'),
+    # URS's de autenticacion -----------------------------------------------------
+    path('login/', views.login, name='login'),
+    path('callback/', views.callback, name='callback'),
+    path('logout/', views.logout, name='logout'),
+    # Otras URL's ----------------------------------------------------------------
+    path('indexDocumentos/', views.indexDocumentos, name='indexDocumentos'),
+    path('loginPage/', views.loginPage, name='loginPage'),
+    path('loginPage/loginPageForm/', views.loginPageForm, name='loginPageForm'),
+    path('loginPage/loginPageForm/submit_login_info/', views.submit_login_info, name='submit_login_info'),
+
     path('admin/', admin.site.urls),
     path('documentos/', include('documentos.urls')),
+    path('landingPage/', include('landing.urls')),
     path('empleados/', include('empleados.urls')),
     path('solicitudes/', include('solicitudes.urls')),
     path('health-check/', views.healthCheck),

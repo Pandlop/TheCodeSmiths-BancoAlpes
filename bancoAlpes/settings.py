@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+# from decouple import config
+from dotenv import load_dotenv, find_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATE_DIR = os.path.join(BASE_DIR, "bancoAlpes", "templates")
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap5',
+    'bancoAlpes',
     'landing',
     'documentos',
     'reportes',
@@ -46,6 +50,33 @@ INSTALLED_APPS = [
     'usuarios',
     'empleados'
 ]
+
+
+# Load environment definition file
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
+
+# Load Auth0 application settings into memory
+AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
+AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
+AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")
+
+APPEND_SLASH=False
+
+
+# AUTH0_SCOPE =[ 'openid', 'profile', 'email']
+
+# AUTENTICATION_BACKENDS = {
+#     'django.contrib.auth.backends.ModelBackend',
+
+# }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +93,7 @@ ROOT_URLCONF = 'bancoAlpes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,8 +126,8 @@ DATABASES = {
         'NAME': "persistencia_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.6",
-        #"HOST": "localhost",
+        # "HOST": "10.128.0.6",
+        "HOST": "localhost",
         "PORT": "5432",
     },
     'validacion_docsbd': {

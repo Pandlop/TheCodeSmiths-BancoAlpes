@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Alpes</title>
+    <link rel="stylesheet" href="{% static 'landing.css' %}">
+
+    <style>
+        /* Estilo adicional para centrar el contenido */
+        body, html {
+          height: 100%;
+        }
+    
+        /* body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        } */
+    
+        .rounded-button {
+          border-radius: 10px; /* Ajusta el radio de las esquinas */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .contenedor_boton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+        }
+
+      </style>
+
+
+</head>
+<body>
+    <nav>
+        <h1>Banco Alpes</h1>
+        <div>
+            <a href="#">TDC</a>
+            <a href="/documentos/documentosCarga/">Cargar Documentos</a>
+            <a href="#">Firmar</a>
+        </div>
+        
+    </nav>
+
+    <div class="" style="margin: 2rem;">
+        <h1>Inicio de sesión</h1>
+        <h2>Terminos y Condiciones de Uso</h2>
+        <br>
+
+        <ol>
+            <li>
+                <b>Aceptación de los Términos</b> </br> 
+                Al acceder y utilizar el sitio web de Banco de los Alpes, usted acepta estar sujeto a estos términos y condiciones de uso, todas las leyes y regulaciones aplicables, y acepta que es responsable del cumplimiento de cualquier ley local aplicable. Si no está de acuerdo con alguno de estos términos, se le prohíbe usar o acceder a este sitio.
+            </li>
+
+            <li>
+                <b>Uso de licencia</b> <br> 
+                Se otorga permiso para descargar temporalmente una copia de los materiales (información o software) en el sitio web de Banco de los Alpes para visualización transitoria personal y no comercial solamente. Este es el otorgamiento de una licencia, no una transferencia de título, y bajo esta licencia no puede:
+                <ul>
+                    <li>modificar o copiar los materiales;</li>
+                    <li>usar los materiales para cualquier propósito comercial, o para cualquier exhibición pública (comercial o no comercial);</li>
+                    <li>intentar descompilar o revertir cualquier software contenido en el sitio web de Banco de los Alpes;</li>
+                    <li>eliminar cualquier derecho de autor u otras notaciones de propiedad de los materiales; o</li>
+                    <li>transferir los materiales a otra persona o "espejar" los materiales en cualquier otro servidor.</li>
+                </ul>
+                <br>
+                Esta licencia terminará automáticamente si usted viola cualquiera de estas restricciones y puede ser terminada por el Banco de los Alpes en cualquier momento. Al terminar su visualización de estos materiales o al terminar esta licencia, debe destruir cualquier material descargado en su posesión, ya sea en formato electrónico o impreso.
+            </li>
+
+            <li>
+                <b>Descargo de responsabilidad</b>  <br> 
+                Los materiales en el sitio web de Banco de los Alpes se proporcionan 'tal cual'. Banco de los Alpes no ofrece garantías, expresadas o implícitas, y por este medio niega y rechaza todas las otras garantías incluyendo, sin limitación, garantías implícitas o condiciones de comerciabilidad, aptitud para un propósito particular, o no infracción de propiedad intelectual u otra violación de derechos.
+            </li>
+
+            <li>
+                <b>Limitaciones</b> <br> 
+                En ningún caso Banco de los Alpes o sus proveedores serán responsables por cualquier daño (incluyendo, sin limitación, daños por pérdida de datos o beneficio, o debido a interrupción del negocio) que surjan del uso o la incapacidad de usar los materiales en el sitio web de Banco de los Alpes, incluso si Banco de los Alpes o un representante autorizado de Banco de los Alpes ha sido notificado oralmente o por escrito de la posibilidad de tal daño.
+            </li>
+
+            <li>
+                <b>Enlaces</b> <br> 
+                Banco de los Alpes no ha revisado todos los sitios vinculados a su sitio web y no es responsable del contenido de ningún sitio vinculado. La inclusión de cualquier enlace no implica el respaldo por parte de Banco de los Alpes del sitio. El uso de cualquier sitio web vinculado es por cuenta y riesgo del usuario.
+            </li>
+
+            <li>
+                <b>Modificaciones de los Términos de Uso</b> <br> 
+                Banco de los Alpes puede revisar estos términos de uso para su sitio web en cualquier momento sin previo aviso. Al usar este sitio web, usted está de acuerdo en estar sujeto a la versión actual de estos términos y condiciones de uso.
+            </li>
+
+            <li>
+                <b>Ley Gobernante</b> <br> 
+                Cualquier reclamo relacionado con el sitio web de Banco de los Alpes se regirá por las leyes del país/estado de Banco de los Alpes sin consideración a su conflicto de disposiciones legales.
+            </li>
+
+        </ol>
+
+        <br>
+
+        <p>¡Descubre todo lo que la Tarjeta de Crédito Alpes puede hacer por ti y comienza a disfrutar de una nueva forma de vivir tus finanzas!</p>
+
+    </div>
+
+    <div class="contenedor_boton">
+        <a href="loginPageForm/"><button class="rounded-button">Aceptar terminos y condiciones</button></a>
+        <a href="/landingPage/"><button class="rounded-button" style="margin-left: 2rem;">Volver</button></a>
+      </div>
+    
+    
+</body>
+</html>
