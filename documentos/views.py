@@ -206,7 +206,13 @@ def list_docs_id(request,docId):
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
 
-    return render(request, 'indexDocumentos.html')
+    print(request.session.get("user"))
+    
+    if request.session.get("user") is None:
+        return redirect(reverse("login"))
+    else: 
+        context = {"session": request.session.get("user")}
+        return render(request, 'indexDocumentos.html', context)
 
 @csrf_exempt
 # Funcion para asignar un score a un documento con el api de google

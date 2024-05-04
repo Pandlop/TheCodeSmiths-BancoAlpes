@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'bootstrap5',
     'bancoAlpes',
     'landing',
@@ -49,17 +48,14 @@ INSTALLED_APPS = [
     'reportes',
     'solicitudes',
     'usuarios',
-    'empleados',
+    'empleados'
 ]
 
 
 # Load environment definition file
-# ENV_FILE = find_dotenv()
-# if ENV_FILE:
-#     load_dotenv(ENV_FILE)
-
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
-load_dotenv(dotenv_path)
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
 
 
 # Load Auth0 application settings into memory
@@ -90,13 +86,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ROOT_URLCONF = 'bancoAlpes.urls'
 
 TEMPLATES = [
@@ -135,7 +126,8 @@ DATABASES = {
         'NAME': "persistencia_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.6",
+        # "HOST": "10.128.0.6",
+        "HOST": "localhost",
         "PORT": "5432",
     },
     'validacion_docsbd': {
@@ -143,7 +135,8 @@ DATABASES = {
         'NAME': "validaciondocsbd",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.7",
+        # "HOST": "10.128.0.7",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 

@@ -1,10 +1,7 @@
-import os
-from time import sleep
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template import loader
 from .forms import Login_Info
-import requests
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -73,14 +70,31 @@ def submit_login_info(request):
 # Otras funciones ---------------------------------------------------------------
 
 @csrf_exempt
-def landingPage(request):    
+def landingPage(request):
+    estaLogueado = request.session.get("user") != None;
 
-    return render(request, 'landingPage.html')
+    context={
+            "session": request.session.get("user"),
+            "pretty": json.dumps(request.session.get("user"), indent=4),
+            "estaLogueado": estaLogueado}
+    
+
+    return render(request, 'landingPage.html', context)
 
 @csrf_exempt
 def loginPage(request):
 
-    return render(request, 'loginPage.html')
+    estaLogueado = request.session.get("user") != None;
+
+    context={
+            "session": request.session.get("user"),
+            "pretty": json.dumps(request.session.get("user"), indent=4),
+            "estaLogueado": estaLogueado}
+    
+    if estaLogueado:
+        return redirect(reverse("landingPage"))
+    else:
+        return render(request, 'loginPage.html')
     
 @csrf_exempt
 def loginPageForm(request):
