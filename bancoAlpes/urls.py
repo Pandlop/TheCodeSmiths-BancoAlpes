@@ -29,9 +29,9 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     # Otras URL's ----------------------------------------------------------------
     path('indexDocumentos/', views.indexDocumentos, name='indexDocumentos'),
-    path('loginPage/', views.loginPage, name='loginPage'),
-    path('loginPage/loginPageForm/', views.loginPageForm, name='loginPageForm'),
-    path('loginPage/loginPageForm/submit_login_info/', views.submit_login_info, name='submit_login_info'),
+    path('loginPage/', views.login, name='login'),
+    path('loginPage/loginPageForm/', views.login, name='login'),
+    path('loginPage/loginPageForm/submit_login_info/', views.login, name='login'),
 
     path('admin/', admin.site.urls),
     path('documentos/', include('documentos.urls')),
