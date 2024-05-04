@@ -42,7 +42,7 @@ def callback(request):
 
     request.session["user"] = token
 
-    return redirect(request.build_absolute_uri(reverse("loginPage")))
+    return redirect(request.build_absolute_uri(reverse("login")))
 
 @csrf_exempt
 def logout(request):
