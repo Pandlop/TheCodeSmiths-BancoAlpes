@@ -1,7 +1,10 @@
+import os
+from time import sleep
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template import loader
 from .forms import Login_Info
+import requests
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -26,6 +29,7 @@ oauth.register(
 )
 
 def login(request):
+    sleep(19)
     print(request.session.get("login_info"), "desde login")
 
     return oauth.auth0.authorize_redirect(
@@ -37,6 +41,11 @@ def callback(request):
     token = oauth.auth0.authorize_access_token(request)
 
     request.session["user"] = token
+
+    print(token, "desde callback\n\n")
+
+    # dominio = settings.AUTH0_DOMAIN
+    print(token['access_token'])
 
     return redirect(request.build_absolute_uri(reverse("loginPage")))
 
@@ -93,31 +102,14 @@ def submit_login_info(request):
 # Otras funciones ---------------------------------------------------------------
 
 @csrf_exempt
-def landingPage(request):
-    estaLogueado = request.session.get("user") != None;
+def landingPage(request):    
 
-    context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-            "estaLogueado": estaLogueado}
-    
-
-    return render(request, 'landingPage.html', context)
+    return render(request, 'landingPage.html')
 
 
 def loginPage(request):
 
-    estaLogueado = request.session.get("user") != None;
-
-    context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-            "estaLogueado": estaLogueado}
-    
-    if estaLogueado:
-        return redirect(reverse("landingPage"))
-    else:
-        return render(request, 'loginPage.html')
+    return render(request, 'loginPage.html')
     
 
 def loginPageForm(request):

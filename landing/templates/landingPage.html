@@ -49,10 +49,10 @@
         
     </nav>
 
-    {% if estaLogueado %}
+    <!-- {% if estaLogueado %}
         <p>Hola, {{ session.userinfo.nickname }}. ¡Bienvenido a Banco Alpes!</p>
-        <a href="{% url 'logout' %}">Cerrar sesión</a>
-    {% endif %}
+        {% endif %} -->
+    <a href="{% url 'logout' %}">Cerrar sesión</a>
 
     <div class="">
         <h1>Bienvenido a Banco Alpes</h1>
