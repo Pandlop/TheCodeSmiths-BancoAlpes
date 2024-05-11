@@ -52,175 +52,153 @@ def list_docs(request):
 
         print("Integridad = " , revisarIntegridad(request))
 
-        if(revisarIntegridad(request) == -1):
+        if(revisarIntegridad(request) == 1):
+
+
+            form = ArchivoForm(request.POST, request.FILES)
+
+            if form.is_valid():
+
+                ccFrontal = request.FILES.getlist('ccFrontal_file')
+                ccTrasera = request.FILES.getlist('ccTrasera_file')
+                desprendiblePago1 = request.FILES.getlist('desprendiblePago1_file')
+                desprendiblePago2 = request.FILES.getlist('desprendiblePago2_file')
+
+                archivos_listas = [
+                    request.FILES.getlist('ccFrontal_file'),
+                    request.FILES.getlist('ccTrasera_file'),
+                    request.FILES.getlist('desprendiblePago1_file'),
+                    request.FILES.getlist('desprendiblePago2_file'),
+                ]
+
+
+                # Verificar que todos los archivos sean PNG
+                todos_png = all(os.path.splitext(f.name)[1].lower() == '.png' for lista in archivos_listas for f in lista)
+                
+                if not todos_png:
+                    # messages.error(request, 'Todos los archivos deben ser PNG.')
+                    return render(request, 'documentosCarga.html', {
+                        'documentosSubidos': DocumentoCarga.objects.all(),
+                        'docsExitosos': False,
+                        'post': True,
+                        'message': 'Error: Todos los archivos deben ser PNG.'
+                    })
+
+                threads = []
+                lock = threading.Lock()
+
+                for f in ccFrontal:
+                    instanciaCcFrontal = DocumentoCarga(archivo=f)
+                    instanciaCcFrontal.tipo = 'ccFrontal'
+                    # threadccFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal', lock))
+                    asignarScoreG(instanciaCcFrontal, 'ccFrontal')
+                    if(instanciaCcFrontal.score <= 0.6):
+                        instanciaCcFrontal.estado = 0 
+                    instanciaCcFrontal.save()     
+                    
+                for f in ccTrasera:
+                    instanciaCcTrasera = DocumentoCarga(archivo=f)
+                    instanciaCcTrasera.tipo = 'ccTrasera'
+                    # threadccTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera', lock))
+                    asignarScoreG(instanciaCcTrasera, 'ccTrasera')
+                    if(instanciaCcTrasera.score <= 0.6):
+                        instanciaCcTrasera.estado = 0 
+                    instanciaCcTrasera.save()
+                    
+                for f in desprendiblePago1:
+                    instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
+                    instanciaDesprendiblePago1.tipo = 'desprendiblePago'
+                    # threaddesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago', lock))
+                    asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
+                    if(instanciaDesprendiblePago1.score <= 0.6):
+                        instanciaDesprendiblePago1.estado = 0 
+                    instanciaDesprendiblePago1.save()
+
+                for f in desprendiblePago2:
+                    instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
+                    instanciaDesprendiblePago2.tipo = 'desprendiblePago'
+                    # threaddesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago', lock))
+                    asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
+                    if(instanciaDesprendiblePago2.score <= 0.6):
+                        instanciaDesprendiblePago2.estado = 0 
+                    instanciaDesprendiblePago2.save()
+
+
+                # threads.append(threadccFrontal)
+                # threads.append(threadccTrasera)
+                # threads.append(threaddesprendiblePago1)
+                # threads.append(threaddesprendiblePago2)
+
+                # print("Creando T1")
+                # threadccFrontal.start()
+                # print("Creando T2")
+                # threadccTrasera.start()
+                # print("Creando T3")
+                # threaddesprendiblePago1.start()
+                # print("Creando T4")
+                # threaddesprendiblePago2.start()
+
+
+                # i=0
+                # for t in threads:
+                #     print("Esperando a T", i+1)
+                #     t.join(timeout=2)
+                #     print("T", i+1, "terminó")
+                #     i+=1
+
+
+                # if(instanciaCcFrontal.score < 0.6):
+                #     instanciaCcFrontal.estado = 0 
+                # instanciaCcFrontal.save()
+
+                # if(instanciaCcTrasera.score < 0.6):
+                #     instanciaCcTrasera.estado = 0
+                # instanciaCcTrasera.save()
+
+                # if(instanciaDesprendiblePago1.score < 0.6):
+                #     instanciaDesprendiblePago1.estado = 0
+                # instanciaDesprendiblePago1.save()
+
+                # if(instanciaDesprendiblePago2.score < 0.6):
+                #     instanciaDesprendiblePago2.estado = 0
+                # instanciaDesprendiblePago2.save()
+
+
+                # messages.success(request, 'Archivo subido correctamente')
+
+                documentosSubidos = DocumentoCarga.objects.all()
+                docsExitosos = True
+                message = "Los archivos se han subido con exito"
+                context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post": True}
+                
+                return render(request, 'documentosCarga.html',context)  
+            
+            else:
+                documentosSubidos = DocumentoCarga.objects.all()
+                docsExitosos = False
+                
+                # El formulario no es válido, extraer el primer error
+                primer_error = None
+
+                # Buscar el primer error de un campo específico
+                for field in form:
+                    if field.errors:
+                        primer_error = str(field.errors[0])
+                        break
+
+                # Si no hay errores de campo, verificar errores generales del formulario
+                if not primer_error:
+                    if form.non_field_errors():
+                        primer_error = str(form.non_field_errors()[0])
+
+                message = primer_error
+                context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
+                
+                return render(request, 'documentosCarga.html', context)
+        else:
             print("Estoy en el error")
 
             return HttpResponse('Documento no encontrado', status=412)
-
-
-            # documentosSubidos = DocumentoCarga.objects.all()
-            # docsExitosos = False
-            
-            # # El formulario no es válido, extraer el primer error
-            # primer_error = None
-
-            # # Buscar el primer error de un campo específico
-            # for field in form:
-            #     if field.errors:
-            #         primer_error = str(field.errors[0])
-            #         break
-
-            # # Si no hay errores de campo, verificar errores generales del formulario
-            # if not primer_error:
-            #     if form.non_field_errors():
-            #         primer_error = str(form.non_field_errors()[0])
-
-            # message = primer_error
-            # context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
-            
-            # return render(request, 'documentosCarga.html', context)
-
-
-        form = ArchivoForm(request.POST, request.FILES)
-
-        if form.is_valid():
-
-            ccFrontal = request.FILES.getlist('ccFrontal_file')
-            ccTrasera = request.FILES.getlist('ccTrasera_file')
-            desprendiblePago1 = request.FILES.getlist('desprendiblePago1_file')
-            desprendiblePago2 = request.FILES.getlist('desprendiblePago2_file')
-
-            archivos_listas = [
-                request.FILES.getlist('ccFrontal_file'),
-                request.FILES.getlist('ccTrasera_file'),
-                request.FILES.getlist('desprendiblePago1_file'),
-                request.FILES.getlist('desprendiblePago2_file'),
-            ]
-
-
-            # Verificar que todos los archivos sean PNG
-            todos_png = all(os.path.splitext(f.name)[1].lower() == '.png' for lista in archivos_listas for f in lista)
-            
-            if not todos_png:
-                # messages.error(request, 'Todos los archivos deben ser PNG.')
-                return render(request, 'documentosCarga.html', {
-                    'documentosSubidos': DocumentoCarga.objects.all(),
-                    'docsExitosos': False,
-                    'post': True,
-                    'message': 'Error: Todos los archivos deben ser PNG.'
-                })
-
-            threads = []
-            lock = threading.Lock()
-
-            for f in ccFrontal:
-                instanciaCcFrontal = DocumentoCarga(archivo=f)
-                instanciaCcFrontal.tipo = 'ccFrontal'
-                # threadccFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal', lock))
-                asignarScoreG(instanciaCcFrontal, 'ccFrontal')
-                if(instanciaCcFrontal.score <= 0.6):
-                    instanciaCcFrontal.estado = 0 
-                instanciaCcFrontal.save()     
-                
-            for f in ccTrasera:
-                instanciaCcTrasera = DocumentoCarga(archivo=f)
-                instanciaCcTrasera.tipo = 'ccTrasera'
-                # threadccTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera', lock))
-                asignarScoreG(instanciaCcTrasera, 'ccTrasera')
-                if(instanciaCcTrasera.score <= 0.6):
-                    instanciaCcTrasera.estado = 0 
-                instanciaCcTrasera.save()
-                
-            for f in desprendiblePago1:
-                instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
-                instanciaDesprendiblePago1.tipo = 'desprendiblePago'
-                # threaddesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago', lock))
-                asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
-                if(instanciaDesprendiblePago1.score <= 0.6):
-                    instanciaDesprendiblePago1.estado = 0 
-                instanciaDesprendiblePago1.save()
-
-            for f in desprendiblePago2:
-                instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
-                instanciaDesprendiblePago2.tipo = 'desprendiblePago'
-                # threaddesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago', lock))
-                asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
-                if(instanciaDesprendiblePago2.score <= 0.6):
-                    instanciaDesprendiblePago2.estado = 0 
-                instanciaDesprendiblePago2.save()
-
-
-            # threads.append(threadccFrontal)
-            # threads.append(threadccTrasera)
-            # threads.append(threaddesprendiblePago1)
-            # threads.append(threaddesprendiblePago2)
-
-            # print("Creando T1")
-            # threadccFrontal.start()
-            # print("Creando T2")
-            # threadccTrasera.start()
-            # print("Creando T3")
-            # threaddesprendiblePago1.start()
-            # print("Creando T4")
-            # threaddesprendiblePago2.start()
-
-
-            # i=0
-            # for t in threads:
-            #     print("Esperando a T", i+1)
-            #     t.join(timeout=2)
-            #     print("T", i+1, "terminó")
-            #     i+=1
-
-
-            # if(instanciaCcFrontal.score < 0.6):
-            #     instanciaCcFrontal.estado = 0 
-            # instanciaCcFrontal.save()
-
-            # if(instanciaCcTrasera.score < 0.6):
-            #     instanciaCcTrasera.estado = 0
-            # instanciaCcTrasera.save()
-
-            # if(instanciaDesprendiblePago1.score < 0.6):
-            #     instanciaDesprendiblePago1.estado = 0
-            # instanciaDesprendiblePago1.save()
-
-            # if(instanciaDesprendiblePago2.score < 0.6):
-            #     instanciaDesprendiblePago2.estado = 0
-            # instanciaDesprendiblePago2.save()
-
-
-            # messages.success(request, 'Archivo subido correctamente')
-
-            documentosSubidos = DocumentoCarga.objects.all()
-            docsExitosos = True
-            message = "Los archivos se han subido con exito"
-            context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post": True}
-            
-            return render(request, 'documentosCarga.html',context)  
-        
-        else:
-            documentosSubidos = DocumentoCarga.objects.all()
-            docsExitosos = False
-            
-            # El formulario no es válido, extraer el primer error
-            primer_error = None
-
-            # Buscar el primer error de un campo específico
-            for field in form:
-                if field.errors:
-                    primer_error = str(field.errors[0])
-                    break
-
-            # Si no hay errores de campo, verificar errores generales del formulario
-            if not primer_error:
-                if form.non_field_errors():
-                    primer_error = str(form.non_field_errors()[0])
-
-            message = primer_error
-            context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
-            
-            return render(request, 'documentosCarga.html', context)
     else:
             documentosSubidos = DocumentoCarga.objects.all()
             context = {'documentosSubidos': documentosSubidos, 'docsExitosos': docsExitosos, "post":False}
