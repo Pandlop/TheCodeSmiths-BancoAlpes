@@ -109,77 +109,78 @@ def list_docs(request):
             for f in ccFrontal:
                 instanciaCcFrontal = DocumentoCarga(archivo=f)
                 instanciaCcFrontal.tipo = 'ccFrontal'
-                threadccFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal', lock))
-                # asignarScoreG(instanciaCcFrontal, 'ccFrontal')
-                # if(instanciaCcFrontal.score <= 0.6):
-                #     instanciaCcFrontal.estado = 0 
-                # instanciaCcFrontal.save()     
+                # threadccFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal', lock))
+                asignarScoreG(instanciaCcFrontal, 'ccFrontal')
+                if(instanciaCcFrontal.score <= 0.6):
+                    instanciaCcFrontal.estado = 0 
+                instanciaCcFrontal.save()     
                 
             for f in ccTrasera:
                 instanciaCcTrasera = DocumentoCarga(archivo=f)
                 instanciaCcTrasera.tipo = 'ccTrasera'
-                threadccTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera', lock))
-                # asignarScoreG(instanciaCcTrasera, 'ccTrasera')
-                # if(instanciaCcTrasera.score <= 0.6):
-                #     instanciaCcTrasera.estado = 0 
-                # instanciaCcTrasera.save()
+                # threadccTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera', lock))
+                asignarScoreG(instanciaCcTrasera, 'ccTrasera')
+                if(instanciaCcTrasera.score <= 0.6):
+                    instanciaCcTrasera.estado = 0 
+                instanciaCcTrasera.save()
                 
             for f in desprendiblePago1:
                 instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
                 instanciaDesprendiblePago1.tipo = 'desprendiblePago'
-                threaddesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago', lock))
-                # asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
-                # if(instanciaDesprendiblePago1.score <= 0.6):
-                #     instanciaDesprendiblePago1.estado = 0 
-                # instanciaDesprendiblePago1.save()
+                # threaddesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago', lock))
+                asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
+                if(instanciaDesprendiblePago1.score <= 0.6):
+                    instanciaDesprendiblePago1.estado = 0 
+                instanciaDesprendiblePago1.save()
 
             for f in desprendiblePago2:
                 instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
                 instanciaDesprendiblePago2.tipo = 'desprendiblePago'
-                threaddesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago', lock))
-                # asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
-                # if(instanciaDesprendiblePago2.score <= 0.6):
-                #     instanciaDesprendiblePago2.estado = 0 
-                # instanciaDesprendiblePago2.save()
-
-            threads.append(threadccFrontal)
-            threads.append(threadccTrasera)
-            threads.append(threaddesprendiblePago1)
-            threads.append(threaddesprendiblePago2)
-
-            print("Creando T1")
-            threadccFrontal.start()
-            print("Creando T2")
-            threadccTrasera.start()
-            print("Creando T3")
-            threaddesprendiblePago1.start()
-            print("Creando T4")
-            threaddesprendiblePago2.start()
+                # threaddesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago', lock))
+                asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
+                if(instanciaDesprendiblePago2.score <= 0.6):
+                    instanciaDesprendiblePago2.estado = 0 
+                instanciaDesprendiblePago2.save()
 
 
-            i=0
-            for t in threads:
-                print("Esperando a T", i+1)
-                t.join(timeout=2)
-                print("T", i+1, "terminó")
-                i+=1
+            # threads.append(threadccFrontal)
+            # threads.append(threadccTrasera)
+            # threads.append(threaddesprendiblePago1)
+            # threads.append(threaddesprendiblePago2)
+
+            # print("Creando T1")
+            # threadccFrontal.start()
+            # print("Creando T2")
+            # threadccTrasera.start()
+            # print("Creando T3")
+            # threaddesprendiblePago1.start()
+            # print("Creando T4")
+            # threaddesprendiblePago2.start()
 
 
-            if(instanciaCcFrontal.score < 0.6):
-                instanciaCcFrontal.estado = 0 
-            instanciaCcFrontal.save()
+            # i=0
+            # for t in threads:
+            #     print("Esperando a T", i+1)
+            #     t.join(timeout=2)
+            #     print("T", i+1, "terminó")
+            #     i+=1
 
-            if(instanciaCcTrasera.score < 0.6):
-                instanciaCcTrasera.estado = 0
-            instanciaCcTrasera.save()
 
-            if(instanciaDesprendiblePago1.score < 0.6):
-                instanciaDesprendiblePago1.estado = 0
-            instanciaDesprendiblePago1.save()
+            # if(instanciaCcFrontal.score < 0.6):
+            #     instanciaCcFrontal.estado = 0 
+            # instanciaCcFrontal.save()
 
-            if(instanciaDesprendiblePago2.score < 0.6):
-                instanciaDesprendiblePago2.estado = 0
-            instanciaDesprendiblePago2.save()
+            # if(instanciaCcTrasera.score < 0.6):
+            #     instanciaCcTrasera.estado = 0
+            # instanciaCcTrasera.save()
+
+            # if(instanciaDesprendiblePago1.score < 0.6):
+            #     instanciaDesprendiblePago1.estado = 0
+            # instanciaDesprendiblePago1.save()
+
+            # if(instanciaDesprendiblePago2.score < 0.6):
+            #     instanciaDesprendiblePago2.estado = 0
+            # instanciaDesprendiblePago2.save()
 
 
             # messages.success(request, 'Archivo subido correctamente')
