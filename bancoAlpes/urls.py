@@ -32,6 +32,9 @@ urlpatterns = [
     path('loginPage/', views.loginPage, name='loginPage'),
     path('loginPage/loginPageForm/', views.loginPageForm, name='loginPageForm'),
     path('loginPage/loginPageForm/submit_login_info/', views.submit_login_info, name='submit_login_info'),
+    path('loginPage/loginPageForm/submit_login_info/loginOTP/', views.loginOTP, name='loginOTP'),
+    path('loginPage/loginPageForm/submit_login_info/loginOTP/submit_otp/', views.submit_otp, name='submit_otp'),
+
 
     path('admin/', admin.site.urls),
     path('documentos/', include('documentos.urls')),

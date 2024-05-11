@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'reportes',
     'solicitudes',
     'usuarios',
-    'empleados'
+    'empleados',
 ]
 
 
@@ -64,6 +64,20 @@ AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
 AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")
 
 APPEND_SLASH=True
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'bancoalpes@gmail.com'
+# EMAIL_HOST_PASSWORD = 'bancoAlpes1234'
+
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 
 # AUTH0_SCOPE =[ 'openid', 'profile', 'email']
@@ -113,32 +127,48 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "persistenciabancoalpes",
+        'USER': "juanlopez",
+        "PASSWORD": "Codesmiths",
+        "HOST": "localhost",
+        "PORT": "5432",
+    },
+    # 'bancoalpes': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': "persistenciabancoalpes",
-    #     'USER': "juanlopez",
-    #     "PASSWORD": "Codesmiths",
+    #     'NAME': "persistencia_db",
+    #     'USER': "codesmiths_user",
+    #     "PASSWORD": "codesmiths",
+    #     # "HOST": "10.128.0.6",
     #     "HOST": "localhost",
     #     "PORT": "5432",
     # },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia_db",
-        'USER': "codesmiths_user",
-        "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.6",
-        "PORT": "5432",
-    },
-    'validacion_docsbd': {
+
+
+    'usuarios': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': "validaciondocsbd",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.7",
+        "HOST": "localhost",
         "PORT": "5432",
-    }
+    },
+
+
+    # 'validacion_docsbd': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "validaciondocsbd",
+    #     'USER': "codesmiths_user",
+    #     "PASSWORD": "codesmiths",
+    #     "HOST": "10.128.0.7",
+    #     "PORT": "5432",
+    # }
 
 }
+
+
+DATABASE_ROUTERS = ['bancoAlpes.routers.UsuariosRouter']
 
 
 

@@ -4,6 +4,9 @@ from django.shortcuts import render
 # Create your views here.
 def landingPage(request):
     
+    print(request.session["login_info"])
+    print(request.user)
+    
     estaLogueado = request.session.get("user") != None;
     
     context={
