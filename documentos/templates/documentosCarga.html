@@ -90,17 +90,27 @@
                             fetch('/documentos/documentosCarga/', {
                                 method: 'POST',
                                 body: formData,
-                                    
                             })
-                            .then(response => response.json())
-                            .then(data => console.log('Success:', data))
-                            .catch(error => console.error('Error:', error));
+                            .then(response => {
+                                if (!response.ok) {
+                                    // Si el servidor retorna un código de estado de error, manejar aquí
+                                    console.error('Error en la respuesta del servidor:', response.status);
+                                    throw new Error('Error en la respuesta del servidor: ' + response.status);
+                                }
+                                return response.json();  // Si todo va bien, continua procesando la respuesta
+                            })
+                            .then(data => {
+                                console.log('Success:', data);
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
                             
                             
                         }
                     </script>
 
-                    <button type="submit" onclick="llaves()">Enviar</button>
+                    <button type="button" onclick="llaves()">Enviar</button>
                 </form>
     
                 <div style="margin-top: 10px; padding: 0 1em;">

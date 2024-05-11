@@ -50,8 +50,14 @@ def list_docs(request):
 
     if request.method == 'POST':
 
+        print("Integridad = " , revisarIntegridad(request))
+
         if(revisarIntegridad(request) == -1):
+            print("Estoy en el error")
+
             return HttpResponse('Documento no encontrado', status=412)
+
+
             # documentosSubidos = DocumentoCarga.objects.all()
             # docsExitosos = False
             
@@ -470,6 +476,9 @@ def revisarIntegridad(request):
                 for chunk in file.chunks():
                     hash_obj.update(chunk)
                 hash_obj.hexdigest()
+
+                print("Hash del archivo: ", hash_obj.hexdigest())
+                print("Hash del archivo en el request: ", hashFile)
 
 
                 if  hash_obj.hexdigest() != hashFile:
