@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+from empleados.models import Empleado
 from .forms import ArchivoForm
 from .models import DocumentoCarga
 from django.urls import reverse
@@ -213,14 +215,22 @@ def list_docs_id(request,docId):
 @csrf_exempt
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
-
-    print(request.session.get("user"))
     
-    if request.session.get("user") is None:
+    if "user_token" not in request.session:
         return redirect(reverse("loginPage"))
-    else: 
-        context = {"session": request.session.get("user")}
-        return render(request, 'indexDocumentos.html', context)
+    else:
+
+        infoEmpleado = request.session["user_token"]["userinfo"]
+        email = infoEmpleado["email"]
+
+        empleado = Empleado.objects.filter(email=email).first()
+
+        if empleado and empleado.role == 'empleado':
+            return redirect(reverse("vistaDocs"))
+        else:
+
+            context = {"session": request.session["user_token"]}
+            return render(request, 'indexDocumentos.html', context)
 
 @csrf_exempt
 # Funcion para asignar un score a un documento con el api de google
