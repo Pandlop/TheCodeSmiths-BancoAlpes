@@ -1,3 +1,4 @@
+
 function eliminarDoc(docId, row){
     let table = row.parentNode.parentNode;
     table.deleteRow(row.rowIndex);
@@ -8,3 +9,4 @@ function eliminarDoc(docId, row){
     .then(data => console.log(data[0]))
     .catch(error => console.log(error));
 }
+

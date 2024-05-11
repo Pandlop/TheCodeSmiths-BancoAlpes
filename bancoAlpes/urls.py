@@ -23,6 +23,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.landingPage, name='landingPage'),
+
+    #Llave publica servidor
+    path('llave_publica_servidor/', views.llavePublica, name="llavePublica"),
+
+
     # URS's de autenticacion -----------------------------------------------------
     path('login/', views.login, name='login'),
     path('callback/', views.callback, name='callback'),

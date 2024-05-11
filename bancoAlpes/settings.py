@@ -14,7 +14,6 @@ import os
 from pathlib import Path
 # from decouple import config
 from dotenv import load_dotenv, find_dotenv
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR, "bancoAlpes", "templates")

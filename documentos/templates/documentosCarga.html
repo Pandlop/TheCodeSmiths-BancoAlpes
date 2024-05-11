@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="{% static 'mainCargaDocs.css' %}">
     <link rel="stylesheet" href="{% static 'cargaDocs.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <script src="{% static 'documentosCarga.js' %}"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
+    <script src="{% static '../static/documentosCarga.js' %}"></script>  
+
 </head>
 
 <body>
@@ -31,21 +33,117 @@
                 <a href="">X</a>
             </div>
             <div id="bodyCard">
-                <form action="" method="post" enctype="multipart/form-data">
+                <form id="formDocs" action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{form}}
                     <h4>Adjunte la cara frontal de su documento de identidad</h3>
-                    <input type="file" name="ccFrontal" accept="image/png">
+                    <input id="ccFrontal" type="file" name="ccFrontal" accept="image/png">
                     <br>
                     <h4>Adjunte la cara trasera de su documento de identidad</h3>
-                    <input type="file" name="ccTrasera" accept="image/png">
+                    <input id="ccTrasera" type="file" name="ccTrasera" accept="image/png">
                     <br>
                     <h4>Adjunte el primer desprendible de pago</h3>
-                    <input type="file" name="desprendiblePago1" accept="image/png">
+                    <input id="desprendiblePago1" type="file" name="desprendiblePago1" accept="image/png">
                     <br>
                     <h4>Adjunte el segundo desprendible de pago</h3>
-                    <input type="file" name="desprendiblePago2" accept="image/png">
-                    <button type="submit">Enviar</button>
+                    <input id="desprendiblePago2" type="file" name="desprendiblePago2" accept="image/png">
+
+                    <script>
+                        const llave_publica_endpoint = '/llave_publica_servidor/'; 
+
+                        async function llaves() {
+
+                            async function fetchPublicKey() {
+                                const response = await fetch(llave_publica_endpoint);
+                                const data = await response.json();
+                                return forge.pki.publicKeyFromPem(data.publicKey);
+                            }
+
+                            
+                            publicKey = await fetchPublicKey()
+                                
+                            let inputs = document.querySelectorAll('input[type="file"]');
+                                
+                            
+                            // Generar una llave simetrica
+                            let llave_simetrica = forge.random.getBytesSync(32); // Llave simetrica de 256 bits
+                            let iv = forge.random.getBytesSync(16);  // Vector de inicializacion para AES
+                            
+                            //Iniciar hash
+                            var md = forge.md.sha256.create();
+                            
+                            //Form Data
+                            let formData = new FormData();
+                            
+                            for (let input of inputs) {
+                                let file = input.files[0];
+                                let listaForm = {}
+                                    
+                                //Cifrar file
+                                if (file) { // Asegúrate de que haya un archivo seleccionado
+                                    await new Promise((resolve, reject) => {
+                                        let reader = new FileReader();
+                                        reader.onload = function(event) {
+                            
+                                            //Cifrar file
+                                            let arrayBuffer = event.target.result;
+                                            let data = new Uint8Array(arrayBuffer);
+
+                                            let md = forge.md.sha256.create();
+                                            md.update(forge.util.createBuffer(data));
+                                            let hashFile = md.digest().toHex();
+
+
+                                            let cipher = forge.cipher.createCipher('AES-CBC', llave_simetrica);
+                                            cipher.start({iv: iv});
+                                            cipher.update(forge.util.createBuffer(data));
+                                            cipher.finish();
+                                            let fileEncriptado = cipher.output.getBytes();
+                                            let encodedFileEncriptado = forge.util.encode64(fileEncriptado); //codificar a base64
+                            
+                                            //Cifrar hash
+                                            cipher.start({iv: iv});
+                                            cipher.update(forge.util.createBuffer(hashFile));
+                                            cipher.finish();
+                                            let hashEncriptado = cipher.output.getBytes();
+                                            let encodedHashEncriptado = forge.util.encode64(hashEncriptado); //codificar a base64
+                            
+                                            //Cifrar llave simetrica
+                                            var simetricaEncriptada = publicKey.encrypt(llave_simetrica, 'RSA-OAEP', {
+                                                md: forge.md.sha256.create()
+                                            });
+
+                                            // let simetricaEncriptada = publicKey.encrypt(llave_simetrica, 'RSA-OAEP');
+                                            let encodedSimetricaEncriptada = forge.util.encode64(simetricaEncriptada);
+
+                                            listaForm["iv"] = forge.util.encode64(iv)                                  
+                                            listaForm["encodedSimetricaEncriptada"] = encodedSimetricaEncriptada
+                                            listaForm["encodedFileEncriptado"] = encodedFileEncriptado
+                                            listaForm["encodedHashEncriptado"] = encodedHashEncriptado
+                                            formData.append(input.id, JSON.stringify(listaForm)); // Agrega el archivo cifrado al formData
+                                            resolve();
+                                        };
+                                        reader.onerror = () => reject(reader.error);
+                                        reader.readAsArrayBuffer(file);
+                                    });
+                                }
+                            }
+
+                            
+                            fetch('/documentos/documentosCarga/', {
+                                method: 'POST',
+                                body: formData,
+                                    
+                            })
+                            .then(response => response.json())
+                            .then(data => console.log('Success:', data))
+                            .catch(error => console.error('Error:', error));
+                            
+                            
+                        }
+                    </script>
+
+                    <button type="button" onclick="llaves()">Enviar</button>
                 </form>
     
                 <div style="margin-top: 10px; padding: 0 1em;">
