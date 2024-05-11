@@ -51,27 +51,28 @@ def list_docs(request):
     if request.method == 'POST':
 
         if(revisarIntegridad(request) == -1):
-            documentosSubidos = DocumentoCarga.objects.all()
-            docsExitosos = False
+            return HttpResponse('Documento no encontrado', status=412)
+            # documentosSubidos = DocumentoCarga.objects.all()
+            # docsExitosos = False
             
-            # El formulario no es válido, extraer el primer error
-            primer_error = None
+            # # El formulario no es válido, extraer el primer error
+            # primer_error = None
 
-            # Buscar el primer error de un campo específico
-            for field in form:
-                if field.errors:
-                    primer_error = str(field.errors[0])
-                    break
+            # # Buscar el primer error de un campo específico
+            # for field in form:
+            #     if field.errors:
+            #         primer_error = str(field.errors[0])
+            #         break
 
-            # Si no hay errores de campo, verificar errores generales del formulario
-            if not primer_error:
-                if form.non_field_errors():
-                    primer_error = str(form.non_field_errors()[0])
+            # # Si no hay errores de campo, verificar errores generales del formulario
+            # if not primer_error:
+            #     if form.non_field_errors():
+            #         primer_error = str(form.non_field_errors()[0])
 
-            message = primer_error
-            context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
+            # message = primer_error
+            # context = {'documentosSubidos': documentosSubidos, "docsExitosos":docsExitosos, "message": message, "post":True}
             
-            return render(request, 'documentosCarga.html', context)
+            # return render(request, 'documentosCarga.html', context)
 
 
         form = ArchivoForm(request.POST, request.FILES)
