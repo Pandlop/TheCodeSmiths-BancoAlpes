@@ -429,6 +429,7 @@ def list_docs(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Json inválido"}, status=400)
         
+        
         # Cargar la llave privada
         try:
             with open("../bancoAlpes/bancoAlpes/llavePrivada.pem", "rb") as key_file:
@@ -441,62 +442,54 @@ def list_docs(request):
         except FileNotFoundError:
             return JsonResponse({"error": "Llave privada no encontrada"}, status=404)
         
+        
         archivos = {}
 
-        archivos_listas = [
+        datosDocs = [
                 json.loads(request.POST.get('ccFrontal')),
                 json.loads(request.POST.get('ccTrasera')),
                 json.loads(request.POST.get('desprendiblePago1')),
                 json.loads(request.POST.get('desprendiblePago2')),
         ]
     
-        for listaDatos in archivos_listas:
+        for datosDoc in datosDocs:
             # Extraer los componentes cifrados
-            iv = listaDatos[0]
-            encodedSimetricaEncriptada = listaDatos[1]
-            encodedFileEncriptado = listaDatos[2]
-            encodedHashEncriptado = listaDatos[3]
-            
+            iv = base64.b64decode(datosDoc["iv"])
+            encodedSimetricaEncriptada = base64.b64decode(datosDoc["encodedSimetricaEncriptada"])
+            encodedFileEncriptado = base64.b64decode(datosDoc["encodedFileEncriptado"])
+            encodedHashEncriptado = base64.b64decode(datosDoc["encodedHashEncriptado"])
 
+            
             #Descifrar llave simetrica
             try:
-                simetricaIv = llavePrivada.decrypt(
-                    base64.b64decode(encodedSimetricaEncriptada),
+                llaveSimetrica = llavePrivada.decrypt(
+                    encodedSimetricaEncriptada,
                     padding.OAEP(
                         mgf=padding.MGF1(algorithm=hashes.SHA256()),
                         algorithm=hashes.SHA256(),
                         label=None
                     )
                 )
-                llaveSimetrica = simetricaIv[:32]  # Asumiendo que la llave es de 256 bits
-                iv = simetricaIv[32:48]  # Asumiendo que el IV es de 128 bits
+            
+                cipher = Cipher(algorithms.AES(llaveSimetrica), modes.CFB(iv), backend=default_backend())
+
+                decryptor = cipher.decryptor()
+                fileDesencriptada = decryptor.update(encodedFileEncriptado) + decryptor.finalize()
+                decryptor = cipher.decryptor()
+                hashDesencriptado = decryptor.update(encodedHashEncriptado) + decryptor.finalize()
+
+                # Verificar el hash
+                hashCalculado = hashlib.sha256(fileDesencriptada).hexdigest()
+      
+                if hashCalculado != hashDesencriptado:
+                    break;
+                else:
+                    verificados +=1
+
+                return render(request, 'documentosCarga.html',context)  
+                
             except Exception as e:
                 return JsonResponse({"error": f"No se pudo desencriptar la llave o el Iv: {str(e)}"}, status=500)
-        
-
-            cipher = Cipher(algorithms.AES(llaveSimetrica), modes.CFB(iv), backend=default_backend())
-            decryptor = cipher.decryptor()
-        
-            # Descifrar el archivo
-            try:
-                fileDesencriptada = decryptor.update(base64.b64decode(encodedFileEncriptado)) + decryptor.finalize()
-            except Exception as e:
-                return JsonResponse({"error": f"No se pudo desencriptar el archivo: {str(e)}"}, status=500)
-
-            # Descifrar y verificar el hash
-            try:
-                decryptor = cipher.decryptor()
-                hashDesencriptado = decryptor.update(base64.b64decode(encodedHashEncriptado)) + decryptor.finalize()
-
-            except Exception as e:
-                return JsonResponse({"error": f"No se puedo desencriptar el hash: {str(e)}"}, status=500)
-            
-            # Verificar el hash
-            hashCalculado = hashlib.sha256(fileDesencriptada).hexdigest()
-            if hashCalculado != hashDesencriptado.decode('utf-8'):
-                break;
-            else:
-                verificados +=1
 
 
         print(verificados)
@@ -651,3 +644,4 @@ def list_docs(request):
             return render(request, 'documentosCarga.html', context)   
    
     
+

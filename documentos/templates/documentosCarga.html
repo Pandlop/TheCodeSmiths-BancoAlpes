@@ -66,7 +66,7 @@
                                 
                             
                             // Generar una llave simetrica
-                            let llave_simetrica = forge.random.getBytesSync(32); // Llave simetrica de 128 bits
+                            let llave_simetrica = forge.random.getBytesSync(32); // Llave simetrica de 256 bits
                             let iv = forge.random.getBytesSync(16);  // Vector de inicializacion para AES
                             
                             //Iniciar hash
@@ -75,13 +75,9 @@
                             //Form Data
                             let formData = new FormData();
                             
-                            
-                            
                             for (let input of inputs) {
                                 let file = input.files[0];
                                 let listaForm = {}
-                                md.update(file); //Hash de file
-                                let hashFile = md.digest().toHex()
                                     
                                 //Cifrar file
                                 if (file) { // Asegúrate de que haya un archivo seleccionado
@@ -90,7 +86,14 @@
                                         reader.onload = function(event) {
                             
                                             //Cifrar file
-                                            let data = event.target.result;
+                                            let arrayBuffer = event.target.result;
+                                            let data = new Uint8Array(arrayBuffer);
+
+                                            let md = forge.md.sha256.create();
+                                            md.update(forge.util.createBuffer(data));
+                                            let hashFile = md.digest().toHex();
+
+
                                             let cipher = forge.cipher.createCipher('AES-CBC', llave_simetrica);
                                             cipher.start({iv: iv});
                                             cipher.update(forge.util.createBuffer(data));
@@ -106,10 +109,14 @@
                                             let encodedHashEncriptado = forge.util.encode64(hashEncriptado); //codificar a base64
                             
                                             //Cifrar llave simetrica
-                                            let simetricaEncriptada = publicKey.encrypt(llave_simetrica, 'RSA-OAEP');
+                                            var simetricaEncriptada = publicKey.encrypt(llave_simetrica, 'RSA-OAEP', {
+                                                md: forge.md.sha256.create()
+                                            });
+
+                                            // let simetricaEncriptada = publicKey.encrypt(llave_simetrica, 'RSA-OAEP');
                                             let encodedSimetricaEncriptada = forge.util.encode64(simetricaEncriptada);
-                                            
-                                            listaForm["iv"] = iv
+
+                                            listaForm["iv"] = forge.util.encode64(iv)                                  
                                             listaForm["encodedSimetricaEncriptada"] = encodedSimetricaEncriptada
                                             listaForm["encodedFileEncriptado"] = encodedFileEncriptado
                                             listaForm["encodedHashEncriptado"] = encodedHashEncriptado
@@ -117,7 +124,7 @@
                                             resolve();
                                         };
                                         reader.onerror = () => reject(reader.error);
-                                        reader.readAsBinaryString(file);
+                                        reader.readAsArrayBuffer(file);
                                     });
                                 }
                             }
