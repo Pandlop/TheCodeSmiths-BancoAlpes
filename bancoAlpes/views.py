@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render
 from django.template import loader
 import requests
 
+from empleados.models import Empleado
+
 from .models import userinfo
 from .forms import Login_Info, otpForm
 from django.urls import reverse
@@ -42,23 +44,41 @@ oauth.register(
 )
 @csrf_exempt
 def login(request):
-    print(request.session.get("login_info"), "desde login")
+
+    if "user_token" in request.session:
+
+        token = request.session["user_token"]
+        infoEmpleado = token['userinfo']
+        email = infoEmpleado['email']
+
+        empleado = Empleado.objects.filter(email=email).first()
+        print(empleado, "empleado desde login")
+
+        if empleado and empleado.role == 'empleado':
+            return redirect('vistaDocs')
+        
+        cliente = userinfo.objects.filter(email=email).first()
+
+        if cliente and cliente.role == 'cliente':
+            return redirect('landingPage')
     
-    return oauth.auth0.authorize_redirect(
-        request, request.build_absolute_uri(reverse("callback")),
-        connection = "email",
-        email = request.session.get("login_info")["email"],
-        first_name = request.session.get("login_info")["firstName"],
-        last_name = request.session.get("login_info")["lastName"],
-        ciudad = request.session.get("login_info")["ciudad"],
-        pais = request.session.get("login_info")["pais"],
-    )
+    else:
+    
+        return oauth.auth0.authorize_redirect(
+            request, request.build_absolute_uri(reverse("callback")),
+            connection = "email",
+            email = request.session.get("login_info")["email"],
+            first_name = request.session.get("login_info")["firstName"],
+            last_name = request.session.get("login_info")["lastName"],
+            ciudad = request.session.get("login_info")["ciudad"],
+            pais = request.session.get("login_info")["pais"],
+        )
 
 @csrf_exempt
 def callback(request):
     token = oauth.auth0.authorize_access_token(request)
 
-    request.session["user"] = token
+    request.session["user_token"] = token
     print(token, "desde el callback")
 
     firstName = request.session.get("login_info")["firstName"]
@@ -90,34 +110,9 @@ def callback(request):
 
     # ----------------------------
 
-
-    # Actualizacion de la informacion del usuario
-
-    user_id = token["userinfo"]
-    user_id = user_id["sub"]
-
-    domain = settings.AUTH0_DOMAIN
-    client_id = settings.AUTH0_CLIENT_ID
-    client_secret = settings.AUTH0_CLIENT_SECRET
-    url = f"https://{domain}/api/v2/users/{user_id}"
-
-    token_url = f"https://{domain}/oauth/token"
-
-    headers = {
-            "content-type": "application/json",
-            # "Authorization": f"Bearer {token['access_token']}",
-            "Authorization": f"Bearer 6631dde5fd06a9461f959dae",
-    }
-
-    data = request.session.get("login_info")
-
-    response = requests.patch(url, headers=headers, json=data)
-
-    print(response.json(), "response desde callback")
-
     print("ya estoy saliendo del callback")
 
-    return redirect(request.build_absolute_uri(reverse("loginPage")))
+    return redirect(request.build_absolute_uri(reverse("landingPage")))
 
 @csrf_exempt
 def logout(request):
@@ -208,25 +203,36 @@ def submit_otp(request):
 
 @csrf_exempt
 def landingPage(request):
-    estaLogueado = request.session.get("user") != None;
 
-    context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-            "estaLogueado": estaLogueado}
+    estaLogueado = "user_token" in request.session;
+
+    if estaLogueado:
+
+        token = request.session["user_token"]
+        infoEmpleado = token['userinfo']
+        email = infoEmpleado['email']
+
+        empleado = Empleado.objects.filter(email=email).first()
+
+        if empleado and empleado.role == 'empleado':
+            return redirect('vistaDocs')
+        else:
+
+            context={
+                    "session": request.session["user_token"],
+                    "pretty": json.dumps(request.session["user_token"], indent=4),
+                    "estaLogueado": estaLogueado}
+            
+            return render(request, 'landingPage.html', context)
     
+    else:
 
-    return render(request, 'landingPage.html', context)
+        return render(request, 'landingPage.html')
 
 @csrf_exempt
 def loginPage(request):
 
-    estaLogueado = request.session.get("user") != None;
-
-    context={
-            "session": request.session.get("user"),
-            "pretty": json.dumps(request.session.get("user"), indent=4),
-            "estaLogueado": estaLogueado}
+    estaLogueado = "user_token" in request.session;
     
     if estaLogueado:
         return redirect(reverse("landingPage"))

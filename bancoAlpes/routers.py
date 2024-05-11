@@ -4,7 +4,7 @@ class UsuariosRouter:
         """
         Las lecturas van a la réplica.
         """
-        if model._meta.verbose_name == 'usuarios':
+        if model._meta.verbose_name == 'usuarios' or model._meta.app_label == 'usuarios_empleados':
             return 'usuarios'
         else:
             return 'default'
@@ -13,7 +13,7 @@ class UsuariosRouter:
         """
         Las escrituras van a la base de datos principal.
         """
-        if model._meta.verbose_name == 'usuarios':
+        if model._meta.verbose_name == 'usuarios' or model._meta.app_label == 'usuarios_empleados':
             return 'usuarios'
         else:
             return 'default'
