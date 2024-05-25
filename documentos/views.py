@@ -88,6 +88,7 @@ def list_docs(request):
                 for f in ccFrontal:
                     
                     instanciaCcFrontal = DocumentoCarga(archivo=f)
+                    print(instanciaCcFrontal)
                     instanciaCcFrontal.tipo = 'ccFrontal'
                     asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                     if(instanciaCcFrontal.score <= 0.6):
@@ -186,7 +187,7 @@ def asignarScoreG(instancia, tipoDoc):
     if tipoDoc == 'desprendiblePago':
 
         
-        text = detect_text(instancia.archivo)
+        text = detect_text(instancia.archivo.open())
 
         palabraClave = {
                 'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
@@ -218,11 +219,11 @@ def asignarScoreG(instancia, tipoDoc):
         print("Voy a hacer la pericion a la cedula frontal")
         
 
-        text = detect_text(instancia.archivo)
+        text = detect_text(instancia.archivo.open())
 
         print("Peticion 1 hecha, voy con la 2")
 
-        scoreFace = detect_faces(instancia.archivo)
+        scoreFace = detect_faces(instancia.archivo.open())
 
         print("Peticion 2 hecha")
         
@@ -256,7 +257,7 @@ def asignarScoreG(instancia, tipoDoc):
     elif tipoDoc == "ccTrasera":
 
 
-        text = detect_text(instancia.archivo)
+        text = detect_text(instancia.archivo.open())
 
         palabraClave = {
                 '.CO': 10, 'REGISTRADOR NACIONAL': 10, 'ICCOLO': 10,
@@ -276,9 +277,7 @@ def asignarScoreG(instancia, tipoDoc):
         else:
             instancia.score = score / total_palabras_clave
 
-        instancia.save()
-
-    print("Yo ta terminé :)")
+        instancia.save() 
 
 
 @csrf_exempt
