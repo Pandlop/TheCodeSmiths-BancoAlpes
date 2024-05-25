@@ -4,14 +4,9 @@ from django.shortcuts import redirect, render
 from django.template import loader
 import requests
 
-from empleados.models import Empleado
-
-from .models import userinfo
-from .forms import Login_Info, otpForm
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from authlib.integrations.django_client import OAuth
 from django.conf import settings
 from urllib.parse import quote_plus, urlencode
 from django.views.decorators.csrf import csrf_exempt

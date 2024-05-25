@@ -44,10 +44,7 @@ INSTALLED_APPS = [
     'bancoAlpes',
     'landing',
     'documentos',
-    'reportes',
-    'solicitudes',
-    'usuarios',
-    'empleados',
+
 ]
 
 
@@ -130,6 +127,15 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': "documentos-db",
+        'ENFORCE_SCHEMA': False,
+        'CLIENT':{
+            'host': 'mongodb+srv://juanca003210:NdNsfPUNDb3VAfCj@documentos-db.8gu6l.mongodb.net/?retryWrites=true&w=majority&appName=documentos-db'
+        }
+
+    },
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #     'NAME': "persistenciabancoalpes",
@@ -138,25 +144,15 @@ DATABASES = {
     #     "HOST": "localhost",
     #     "PORT": "5432",
     # },
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia_db",
-        'USER': "codesmiths_user",
-        "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.6",
-        # "HOST": "localhost",
-        "PORT": "5432",
-    },
-
-
-    'usuarios': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "validaciondocsbd",
-        'USER': "codesmiths_user",
-        "PASSWORD": "codesmiths",
-        "HOST": "localhost",
-        "PORT": "5432",
-    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "persistencia_db",
+    #     'USER': "codesmiths_user",
+    #     "PASSWORD": "codesmiths",
+    #     "HOST": "10.128.0.6",
+    #     # "HOST": "localhost",
+    #     "PORT": "5432",
+    # },
 
 
     # 'validacion_docsbd': {
@@ -170,8 +166,6 @@ DATABASES = {
 
 }
 
-
-DATABASE_ROUTERS = ['bancoAlpes.routers.UsuariosRouter']
 
 
 

@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-from empleados.models import Empleado
 from .forms import ArchivoForm
 from .models import DocumentoCarga
 from django.urls import reverse
@@ -10,9 +9,9 @@ from .logic import logic_documentosCarga as ldc
 from django.core import serializers
 from django.http import HttpResponse
 import json
+from google.cloud import  vision
 from django.views.decorators.csrf import csrf_exempt
 
-import requests
 import threading
 import io
 import os
@@ -20,7 +19,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 import os
-from google.cloud import vision
 import base64
 from django.contrib.auth.decorators import login_required
 
@@ -50,14 +48,16 @@ def list_docs(request):
 
     if request.method == 'POST':
 
-        print("Integridad = " , revisarIntegridad(request))
-
-        if(revisarIntegridad(request) == 1):
+        integ = revisarIntegridad(request) == 1
+        print("Integridad = " , integ)
+        if(integ == 1):
+            
+            
 
 
             form = ArchivoForm(request.POST, request.FILES)
-
             if form.is_valid():
+                
 
                 ccFrontal = request.FILES.getlist('ccFrontal_file')
                 ccTrasera = request.FILES.getlist('ccTrasera_file')
@@ -84,13 +84,11 @@ def list_docs(request):
                         'message': 'Error: Todos los archivos deben ser PNG.'
                     })
 
-                threads = []
-                lock = threading.Lock()
 
                 for f in ccFrontal:
+                    
                     instanciaCcFrontal = DocumentoCarga(archivo=f)
                     instanciaCcFrontal.tipo = 'ccFrontal'
-                    # threadccFrontal = threading.Thread(target=asignarScoreG, args=(instanciaCcFrontal, 'ccFrontal', lock))
                     asignarScoreG(instanciaCcFrontal, 'ccFrontal')
                     if(instanciaCcFrontal.score <= 0.6):
                         instanciaCcFrontal.estado = 0 
@@ -99,7 +97,6 @@ def list_docs(request):
                 for f in ccTrasera:
                     instanciaCcTrasera = DocumentoCarga(archivo=f)
                     instanciaCcTrasera.tipo = 'ccTrasera'
-                    # threadccTrasera = threading.Thread(target=asignarScoreG, args=(instanciaCcTrasera, 'ccTrasera', lock))
                     asignarScoreG(instanciaCcTrasera, 'ccTrasera')
                     if(instanciaCcTrasera.score <= 0.6):
                         instanciaCcTrasera.estado = 0 
@@ -108,7 +105,6 @@ def list_docs(request):
                 for f in desprendiblePago1:
                     instanciaDesprendiblePago1 = DocumentoCarga(archivo=f)
                     instanciaDesprendiblePago1.tipo = 'desprendiblePago'
-                    # threaddesprendiblePago1 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago1, 'desprendiblePago', lock))
                     asignarScoreG(instanciaDesprendiblePago1, 'desprendiblePago')
                     if(instanciaDesprendiblePago1.score <= 0.6):
                         instanciaDesprendiblePago1.estado = 0 
@@ -117,54 +113,11 @@ def list_docs(request):
                 for f in desprendiblePago2:
                     instanciaDesprendiblePago2 = DocumentoCarga(archivo=f)
                     instanciaDesprendiblePago2.tipo = 'desprendiblePago'
-                    # threaddesprendiblePago2 = threading.Thread(target=asignarScoreG, args=(instanciaDesprendiblePago2, 'desprendiblePago', lock))
                     asignarScoreG(instanciaDesprendiblePago2, 'desprendiblePago')
                     if(instanciaDesprendiblePago2.score <= 0.6):
                         instanciaDesprendiblePago2.estado = 0 
                     instanciaDesprendiblePago2.save()
 
-
-                # threads.append(threadccFrontal)
-                # threads.append(threadccTrasera)
-                # threads.append(threaddesprendiblePago1)
-                # threads.append(threaddesprendiblePago2)
-
-                # print("Creando T1")
-                # threadccFrontal.start()
-                # print("Creando T2")
-                # threadccTrasera.start()
-                # print("Creando T3")
-                # threaddesprendiblePago1.start()
-                # print("Creando T4")
-                # threaddesprendiblePago2.start()
-
-
-                # i=0
-                # for t in threads:
-                #     print("Esperando a T", i+1)
-                #     t.join(timeout=2)
-                #     print("T", i+1, "terminó")
-                #     i+=1
-
-
-                # if(instanciaCcFrontal.score < 0.6):
-                #     instanciaCcFrontal.estado = 0 
-                # instanciaCcFrontal.save()
-
-                # if(instanciaCcTrasera.score < 0.6):
-                #     instanciaCcTrasera.estado = 0
-                # instanciaCcTrasera.save()
-
-                # if(instanciaDesprendiblePago1.score < 0.6):
-                #     instanciaDesprendiblePago1.estado = 0
-                # instanciaDesprendiblePago1.save()
-
-                # if(instanciaDesprendiblePago2.score < 0.6):
-                #     instanciaDesprendiblePago2.estado = 0
-                # instanciaDesprendiblePago2.save()
-
-
-                # messages.success(request, 'Archivo subido correctamente')
 
                 documentosSubidos = DocumentoCarga.objects.all()
                 docsExitosos = True
@@ -224,155 +177,163 @@ def list_docs_id(request,docId):
 @csrf_exempt
 # Funcion para la pagina de inicio de los documentos
 def indexDocumentos(request):
-    
-    if "user_token" not in request.session:
-        return redirect(reverse("loginPage"))
-    else:
-
-        infoEmpleado = request.session["user_token"]["userinfo"]
-        email = infoEmpleado["email"]
-
-        empleado = Empleado.objects.filter(email=email).first()
-
-        if empleado and empleado.role == 'empleado':
-            return redirect(reverse("vistaDocs"))
-        else:
-
-            context = {"session": request.session["user_token"]}
-            return render(request, 'indexDocumentos.html', context)
+    return render(request, 'indexDocumentos.html')
 
 @csrf_exempt
 # Funcion para asignar un score a un documento con el api de google
-def asignarScoreG(instancia, tipoDoc, lock):
+def asignarScoreG(instancia, tipoDoc):
 
     if tipoDoc == 'desprendiblePago':
 
-        with lock:
+        
+        text = detect_text(instancia.archivo)
 
-            text = detect_text(instancia.archivo)
-
-            palabraClave = {
+        palabraClave = {
                 'nombre': 5, 'cédula': 5, 'fecha': 2, 'valor': 5, 'concepto': 2, 'nómina': 2,
                 'periodo': 2, 'empresa': 2, 'codigo': 1, 'nit': 5, 'direccion': 1,
                 'telefono': 1, 'ciudad': 1, 'correo': 1, 'pago': 1, 'total': 3,
                 'neto': 3, 'deducciones': 1, 'caja': 1, 'compensacion': 1, 'identificación': 5, 'documento': 5,
                 'documento de identidad': 5, 'salario': 5, 'ingresos': 5, 'deducciones': 1, 'ingreso': 5, 'factura': -10,
                 'cliente': -10, 'servicio': -10, 'producto': -10, 'vendedor': -10
-            }
+        }
 
-            total_palabras_clave = len(palabraClave)
-            score = 0
+        total_palabras_clave = len(palabraClave)
+        score = 0
 
-            for palabra, peso in palabraClave.items():
-                if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
                     score += peso
 
-            if score / total_palabras_clave >= 1:
-                instancia.score = 1
-            elif score / total_palabras_clave <= 0:
-                instancia.score = 0
-            else:
-                instancia.score = score / total_palabras_clave
+        if score / total_palabras_clave >= 1:
+            instancia.score = 1
+        elif score / total_palabras_clave <= 0:
+            instancia.score = 0
+        else:
+            instancia.score = score / total_palabras_clave
 
-            instancia.save()
+        instancia.save()
     
     elif tipoDoc == "ccFrontal":
 
         print("Voy a hacer la pericion a la cedula frontal")
-
-        with lock:
-
-            text = detect_text(instancia.archivo)
-
-            print("Peticion 1 hecha, voy con la 2")
-
-            scoreFace = detect_faces(instancia.archivo)
-
-            print("Peticion 2 hecha")
         
-            print ("Fuera del lock")
 
-            palabraClave = {
+        text = detect_text(instancia.archivo)
+
+        print("Peticion 1 hecha, voy con la 2")
+
+        scoreFace = detect_faces(instancia.archivo)
+
+        print("Peticion 2 hecha")
+        
+        print ("Fuera del lock")
+
+        palabraClave = {
                 'cédula de ciudadanía': 10, 'república de colombia': 10, 'apellidos': 5,
                 'nombres': 5, 'nacionalidad': 5, 'estatura': 5, 'sexo': 5, 'fecha de nacimiento': 5,
                 'lugar de nacimiento': 5, 'fecha y lugar de expedición': 5, 'fecha de expiración': 5, 'firma': 5, 'nuip': 10,
-            }
+        }
 
-            total_palabras_clave = sum(palabraClave.values())
-            score = 0
+        total_palabras_clave = sum(palabraClave.values())
+        score = 0
 
-            for palabra, peso in palabraClave.items():
-                if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
-                    score += peso
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+                score += peso
 
-            totalScore = ((score / total_palabras_clave) + scoreFace) / 2
-            # totalScore = ((score / total_palabras_clave) + 0) / 2
+        totalScore = ((score / total_palabras_clave) + scoreFace) / 2
+        # totalScore = ((score / total_palabras_clave) + 0) / 2
 
-            if totalScore >= 1:
-                instancia.score = 1
-            elif totalScore <= 0:
-                instancia.score = 0
-            else:
-                instancia.score = totalScore
+        if totalScore >= 1:
+            instancia.score = 1
+        elif totalScore <= 0:
+            instancia.score = 0
+        else:
+            instancia.score = totalScore
 
-            instancia.save()
+        instancia.save()
 
     elif tipoDoc == "ccTrasera":
 
-        with lock:
 
-            text = detect_text(instancia.archivo)
+        text = detect_text(instancia.archivo)
 
-            palabraClave = {
+        palabraClave = {
                 '.CO': 10, 'REGISTRADOR NACIONAL': 10, 'ICCOLO': 10,
-            }
+        }
 
-            total_palabras_clave = sum(palabraClave.values())
-            score = 0
+        total_palabras_clave = sum(palabraClave.values())
+        score = 0
 
-            for palabra, peso in palabraClave.items():
-                if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
-                    score += peso
+        for palabra, peso in palabraClave.items():
+            if (palabra in text or palabra.upper() in text or palabra.capitalize() in text):
+                score += peso
 
-            if score / total_palabras_clave >= 1:
-                instancia.score = 1
-            elif score / total_palabras_clave <= 0:
-                instancia.score = 0
-            else:
-                instancia.score = score / total_palabras_clave
+        if score / total_palabras_clave >= 1:
+            instancia.score = 1
+        elif score / total_palabras_clave <= 0:
+            instancia.score = 0
+        else:
+            instancia.score = score / total_palabras_clave
 
-            instancia.save()
+        instancia.save()
 
     print("Yo ta terminé :)")
-        
+
+
 @csrf_exempt
-# Google API document analysis methods
-def detect_text(file): # file es un archivo, no un path
+def detect_text(file): 
     """Detects text in the file."""
-
     client = vision.ImageAnnotatorClient()
-
+    file.seek(0)
     content = file.read()
-   
+    
+    if not content:
+        raise Exception("File is empty")
 
     image = vision.Image(content=content)
-
     response = client.text_detection(image=image)
-
-    texts = response.text_annotations
-    text = response.text_annotations[0].description
     
     if response.error.message:
         raise Exception(
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
+
+    texts = response.text_annotations
+    if texts:
+        text = texts[0].description
+    else:
+        text = ""
     
     file.seek(0)
     return text
 
+
 @csrf_exempt
 def detect_faces(file):
+    """Detects faces in an image."""
+    client = vision.ImageAnnotatorClient()
+    content = file.read()
+    
+    if not content:
+        raise Exception("File is empty")
+
+    image = vision.Image(content=content)
+    response = client.face_detection(image=image)
+
+    if response.error.message:
+        raise Exception(
+            "{}\nFor more info on error messages, check: "
+            "https://cloud.google.com/apis/design/errors".format(response.error.message)
+        )
+
+    faces = response.face_annotations
+    file.seek(0)
+
+    if len(faces) != 1:
+        return -1
+    return faces[0].detection_confidence
     """Detects faces in an image."""
     from google.cloud import vision
 

@@ -3,31 +3,31 @@ from .models import DocumentoCarga
 
 class ArchivoForm(forms.ModelForm):
     # score = forms.FloatField()
-    ccFrontal = forms.FileField()
-    ccTrasera = forms.FileField()
-    desprendiblePago1 = forms.FileField()
-    desprendiblePago2 = forms.FileField()
+    ccFrontal_file = forms.FileField()
+    ccTrasera_file = forms.FileField()
+    desprendiblePago1_file = forms.FileField()
+    desprendiblePago2_file = forms.FileField()
 
     class Meta:
         model = DocumentoCarga
         fields = [
-            'ccFrontal',
-            'ccTrasera',
-            'desprendiblePago1',
-            'desprendiblePago2'
+            'ccFrontal_file',
+            'ccTrasera_file',
+            'desprendiblePago1_file',
+            'desprendiblePago2_file'
         ]
 
     def clean_ccFrontal(self):
-        return self.validate_file_size(self.cleaned_data.get('ccFrontal'))
+        return self.validate_file_size(self.cleaned_data.get('ccFrontal_file'))
 
     def clean_ccTrasera(self):
-        return self.validate_file_size(self.cleaned_data.get('ccTrasera'))
+        return self.validate_file_size(self.cleaned_data.get('ccTrasera_file'))
 
     def clean_desprendiblePago1(self):
-        return self.validate_file_size(self.cleaned_data.get('desprendiblePago1'))
+        return self.validate_file_size(self.cleaned_data.get('desprendiblePago1_file'))
 
     def clean_desprendiblePago2(self):
-        return self.validate_file_size(self.cleaned_data.get('desprendiblePago2'))
+        return self.validate_file_size(self.cleaned_data.get('desprendiblePago2_file'))
 
     def validate_file_size(self, archivo):
         if archivo:
