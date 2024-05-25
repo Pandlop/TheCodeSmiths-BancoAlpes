@@ -412,29 +412,6 @@ def detect_faces(file):
         return faces[0].detection_confidence
     
 
-# def upload_document(request):
-#     if request.method == 'POST':
-#         file = request.FILES['document']
-#         hash = DocumentoCarga.generate_hash(file)
-#         document = DocumentoCarga(file=file, hash=hash)
-#         document.save()
-#         return HttpResponse('Documento guardado con éxito!')
-#     return HttpResponse('Error: método no permitido', status=405)
-
-# def verify_document(request, doc_id):
-#     try:
-#         document = DocumentoCarga.objects.get(id=doc_id)
-#         file = request.FILES['document']
-#         hash = DocumentoCarga.generate_hash(file)
-#         if hash == document.hash:
-#             return HttpResponse('El documento no ha sido modificado.')
-#         else:
-#             return HttpResponse('El documento ha sido modificado.')
-#     except DocumentoCarga.DoesNotExist:
-#         return HttpResponse('Documento no encontrado', status=404)
-
-
-
 @csrf_exempt
 def revisarIntegridad(request):
     
