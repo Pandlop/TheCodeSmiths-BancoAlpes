@@ -285,7 +285,6 @@ def asignarScoreG(instancia, tipoDoc):
 def detect_text(file): 
     """Detects text in the file."""
     client = vision.ImageAnnotatorClient()
-    file.seek(0)
     content = file.read()
     
     if not content:
@@ -334,44 +333,6 @@ def detect_faces(file):
     if len(faces) != 1:
         return -1
     return faces[0].detection_confidence
-    """Detects faces in an image."""
-    from google.cloud import vision
-
-    client = vision.ImageAnnotatorClient()
-
-    content = file.read()
-
-    image = vision.Image(content=content)
-
-    response = client.face_detection(image=image)
-    faces = response.face_annotations
-
-    # Names of likelihood from google.cloud.vision.enums
-    likelihood_name = (
-        "UNKNOWN",
-        "VERY_UNLIKELY",
-        "UNLIKELY",
-        "POSSIBLE",
-        "LIKELY",
-        "VERY_LIKELY",
-    )
-
-    if response.error.message:
-        raise Exception(
-            "{}\nFor more info on error messages, check: "
-            "https://cloud.google.com/apis/design/errors".format(response.error.message)
-        )
-    file.seek(0)
-
-    cantidadFaces = len(faces)
-
-    print(cantidadFaces)
-
-    if cantidadFaces > 1 or cantidadFaces == 0:
-        return -1
-    else:
-        return faces[0].detection_confidence
-    
 
 @csrf_exempt
 def revisarIntegridad(request):
