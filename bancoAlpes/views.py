@@ -242,7 +242,7 @@ def submit_signup_info(request):
     }
     print(request.session["signup_info"])
     response = requests.post("http://34.49.65.40:80/user/signup", json=request.session["signup_info"])
-    print(response)
+    print(response.json())
     return redirect(reverse('loginPageForm'))
 
 
