@@ -241,9 +241,9 @@ def submit_signup_info(request):
         "password": password
     }
 
-    response = requests.post("http://34.49.65.40:80/user/signup", data=request.session["signup_info"], allow_redirects=False)
-    print(response.json())
-    return render('loginPageForm.html')
+    response = requests.post("http://34.49.65.40:80/user/signup?" + request.session["signup_info"].input)
+    print(response.json().input)
+    return redirect(reverse('loginPageForm'))
 
 
 @csrf_exempt
