@@ -143,20 +143,20 @@ DATABASES = {
         'NAME': "persistencia_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.128.0.6",
+        "HOST": "10.142.0.2",
         # "HOST": "localhost",
         "PORT": "5432",
     },
 
 
-    'usuarios': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "validaciondocsbd",
-        'USER': "codesmiths_user",
-        "PASSWORD": "codesmiths",
-        "HOST": "localhost",
-        "PORT": "5432",
-    },
+    # 'usuarios': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': "validaciondocsbd",
+    #     'USER': "codesmiths_user",
+    #     "PASSWORD": "codesmiths",
+    #     "HOST": "localhost",
+    #     "PORT": "5432",
+    # },
 
 
     # 'validacion_docsbd': {
