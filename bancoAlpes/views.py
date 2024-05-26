@@ -144,14 +144,14 @@ def submit_login_info(request):
 
     token = requests.post("http://34.49.65.40:80/user/login", json=request.session["login_info"])
     request.session["user_token"] = token
-    return redirect("http://34.110.196.225:80/documentos/documentosCarga")
+    return render(request, 'loginPageForm.html')#redirect("http://34.110.196.225:80/documentos/documentosCarga")
 
 
 def loginOTP(request):
 
     return render(request, 'loginOTP.html')
     
-
+#
 def submit_otp(request):
 
     codigoOTP = request.session.get('otpNumber')
