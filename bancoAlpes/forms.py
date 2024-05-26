@@ -9,6 +9,7 @@ class Login_Info(forms.ModelForm):
     ciudad = forms.CharField(max_length=50)
     email = forms.CharField(max_length=255)
     numero = forms.CharField(max_length=50)
+    password = forms.PasswordInput(max_length=500)
 
     class Meta:
         model = LoginInfo
@@ -19,6 +20,7 @@ class Login_Info(forms.ModelForm):
             'ciudad',
             'email',
             'numero',
+            'password'
         ]
 
     def clean_firstName(self):
@@ -38,6 +40,8 @@ class Login_Info(forms.ModelForm):
     
     def clean_numero(self):
         return self.cleaned_data.get('numero')
+    def clean_password(self):
+        return self.cleaned_data.get('password')
 
 
 class otpForm(forms.Form):
