@@ -130,7 +130,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': "documentos-db",
-        'ENFORCE_SCHEMA': False,
         'CLIENT':{
             'host': 'mongodb+srv://juanca003210:NdNsfPUNDb3VAfCj@documentos-db.8gu6l.mongodb.net/?retryWrites=true&w=majority&appName=documentos-db'
         }
