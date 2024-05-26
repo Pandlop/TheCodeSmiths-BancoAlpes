@@ -149,9 +149,9 @@ def submit_login_info(request):
     if response.status_code == 200:
         # Extraer el token de la respuesta JSON
         token_data = response.json()
-        request.session["user_token"] = token_data.get("token")  # Asegúrate de extraer solo el token
+        request.session["user_token"] = token_data.get("access_token")  # Asegúrate de extraer solo el token
 
-        return HttpResponse(token_data)
+        return HttpResponse(request.session["user_token"])
     else:
         # Manejar el caso de error
         return HttpResponse({'error': 'Login failed. Please try again.'})
