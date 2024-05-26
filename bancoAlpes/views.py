@@ -16,7 +16,7 @@ from django.conf import settings
 from urllib.parse import quote_plus, urlencode
 from django.views.decorators.csrf import csrf_exempt
 from time import sleep
-
+from .decorators import token_required
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -263,21 +263,10 @@ def submit_signup_info(request):
 
 
 @csrf_exempt
+@token_required
 def loginPage(request):
 
-    response = requests.get("http://35.190.51.156:8082/user/is_authenticated?token=" + request.session["user_token"])
-            
-    if "error" in response.text:
-        return redirect("http://35.184.109.166:8080/loginPage")
-
-    
-
-    if "user_token" in request.session:
-
-        token = request.session["user_token"]
-        return HttpResponse(status=200, content={"token": token})
-    else:
-        return render(request, "loginPage.html")     
+    return render(request, "loginPage.html")     
     
 @csrf_exempt
 def loginPageForm(request):
