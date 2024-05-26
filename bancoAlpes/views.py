@@ -142,7 +142,7 @@ def submit_login_info(request):
         "password": password
     }
 
-    token = requests.post("http://34.49.65.40:80/user/login", data=request.session["login_info"], headers=request.session["login_info"])
+    token = requests.post("http://34.49.65.40:80/user/login", json=request.session["login_info"])
     request.session["user_token"] = token
     return redirect("http://34.110.196.225:80/documentos/documentosCarga")
 
