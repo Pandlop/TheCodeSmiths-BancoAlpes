@@ -151,10 +151,10 @@ def submit_login_info(request):
         token_data = response.json()
         request.session["user_token"] = token_data.get("token")  # Asegúrate de extraer solo el token
 
-        return render(request.session["user_token"])
+        return HttpResponse(request.session["user_token"])
     else:
         # Manejar el caso de error
-        return render({'error': 'Login failed. Please try again.'})
+        return HttpResponse({'error': 'Login failed. Please try again.'})
 
 def loginOTP(request):
 
