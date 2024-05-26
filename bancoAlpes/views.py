@@ -151,15 +151,16 @@ def submit_login_info(request):
     # print(response.text)
     # Verificar si la solicitud fue exitosa
     print(response.status_code)
+    print(response.text)
     if response.status_code == 200:
         # Extraer el token de la respuesta JSON
         request.session["user_token"] = response.json().get("access_token") # Asegúrate de extraer solo el token
 
-        return HttpResponse( request.session["user_token"])
+        return HttpResponse( request.session["user_token"], status=200)
     else:
         # Manejar el caso de error
         print("sus")
-        return HttpResponse("error")
+        return HttpResponse("error", status=503)
 
 def loginOTP(request):
 
