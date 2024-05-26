@@ -254,7 +254,7 @@ def loginPage(request):
         token = request.session["user_token"]
         return HttpResponse(status=200, content={"token": token})
     else:
-        return render(request, "loginPageForm.html")     
+        return render(request, "loginPage.html")     
     
 @csrf_exempt
 def loginPageForm(request):
