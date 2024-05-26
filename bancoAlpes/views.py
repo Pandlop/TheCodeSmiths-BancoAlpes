@@ -149,7 +149,7 @@ def submit_login_info(request):
     if response.status_code == 200:
         # Extraer el token de la respuesta JSON
         print(response)
-        request.session["user_token"] = response["access_token"]  # Asegúrate de extraer solo el token
+        # request.session["user_token"] = response.get(["access_token"]  # Asegúrate de extraer solo el token
 
         return HttpResponse(request.session["user_token"])
     else:
