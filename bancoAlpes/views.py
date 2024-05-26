@@ -216,14 +216,45 @@ def landingPage(request):
         return render(request, 'landingPage.html')
 
 @csrf_exempt
+def signupPageForm(request):
+
+    return render(request, 'loginPageForm.html')
+
+@csrf_exempt
+def submit_signup_info(request):
+    firstName = str(request.POST["firstName"])
+    lastName = str(request.POST["lastName"])
+    pais = str(request.POST["pais"])
+    ciudad = str(request.POST["ciudad"])
+    email = str(request.POST["email"])
+    numero = str(request.POST["numero"])
+    password = str(request.POST["password"])
+
+
+    request.session["signup_info"] = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "pais": pais,
+        "ciudad": ciudad,
+        "email": email,
+        "numero": numero,
+        "password": password
+    }
+
+    response = requests.post("34.49.65.40:80/user/signup", request.session["signup_info"])
+
+    return redirect(reverse('loginPageForm'))
+
+
+@csrf_exempt
 def loginPage(request):
 
-    estaLogueado = "user_token" in request.session;
-    
-    if estaLogueado:
-        return redirect(reverse("landingPage"))
+    if "user_token" in request.session:
+
+        token = request.session["user_token"]
+        return HttpResponse(status=200, content={"token": token})
     else:
-        return render(request, 'loginPage.html')
+        return render(request, "loginPageForm.html")     
     
 @csrf_exempt
 def loginPageForm(request):

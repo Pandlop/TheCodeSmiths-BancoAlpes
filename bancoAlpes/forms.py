@@ -43,7 +43,6 @@ class Login_Info(forms.ModelForm):
     def clean_password(self):
         return self.cleaned_data.get('password')
 
-
 class otpForm(forms.Form):
     otpNumber = forms.IntegerField()
 
