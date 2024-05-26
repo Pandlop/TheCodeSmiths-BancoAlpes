@@ -142,10 +142,19 @@ def submit_login_info(request):
         "password": password
     }
 
-    token = requests.post("http://34.49.65.40:80/user/login", json=request.session["login_info"])
-    request.session["user_token"] = token
-    return render(request, 'loginPageForm.html')#redirect("http://34.110.196.225:80/documentos/documentosCarga")
+    # Realizar la solicitud POST para obtener el token
+    response = requests.post("http://34.49.65.40:80/user/login", json=request.session["login_info"])
 
+    # Verificar si la solicitud fue exitosa
+    if response.status_code == 200:
+        # Extraer el token de la respuesta JSON
+        token_data = response.json()
+        request.session["user_token"] = token_data.get("token")  # Asegúrate de extraer solo el token
+
+        return render(request, 'loginPageForm.html')
+    else:
+        # Manejar el caso de error
+        return render(request, 'loginPageForm.html', {'error': 'Login failed. Please try again.'})
 
 def loginOTP(request):
 
