@@ -241,8 +241,25 @@ def submit_signup_info(request):
         "password": password
     }
 
-    response = requests.request("POST","http://34.49.65.40:80/user/signup", data=request.session["signup_info"], headers=request.session["signup_info"])
+    try:
+        response = requests.post("http://34.49.65.40:80/user/signup", headers=request.session["signup_info"], allow_redirects=False)
+        print('Status Code:', response.status_code)
+        if response.status_code == 302:
+            print('Redirected to:', response.headers['Location'])
+            # Opcional: Seguir la redirección manualmente
+            new_url = response.headers['Location']
+            response = requests.post(new_url, headers=request.session["signup_info"])
+            response.raise_for_status()  # Levanta una excepción para respuestas con error
+            print('Signup successful:', response.json())
+        elif response.status_code == 405:
+            print('Method Not Allowed. Check if the POST method is correct for this endpoint.')
+        else:
+            print('Response:', response.text)
+    except requests.exceptions.RequestException as e:
+        print('An error occurred:', e)
 
+    # response = requests.post("http://34.49.65.40:80/user/signup", data=request.session["signup_info"], headers=request.session["signup_info"])
+    
     return redirect(reverse('loginPageForm'))
 
 
