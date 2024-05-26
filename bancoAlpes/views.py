@@ -220,7 +220,7 @@ def signupPageForm(request):
 
     return render(request, 'signupPageForm.html')
 
-
+@csrf_exempt
 def submit_signup_info(request):
     first_name = str(request.POST["first_name"])
     last_name = str(request.POST["last_name"])
@@ -241,7 +241,7 @@ def submit_signup_info(request):
         "password": password
     }
 
-    response = requests.post("http://34.49.65.40:80/user/signup", data=request.session["signup_info"], headers=request.session["signup_info"])
+    response = requests.post("http://34.49.65.40:80/user/signup", data=request.session["signup_info"])
     
     return redirect(reverse('loginPageForm'))
 
