@@ -9,7 +9,7 @@ class Login_Info(forms.ModelForm):
     ciudad = forms.CharField(max_length=50)
     email = forms.CharField(max_length=255)
     numero = forms.CharField(max_length=50)
-    password = forms.PasswordInput(max_length=500)
+    password = forms.CharField(max_length=500)
 
     class Meta:
         model = LoginInfo
