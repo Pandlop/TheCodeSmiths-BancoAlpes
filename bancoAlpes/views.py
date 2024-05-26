@@ -142,9 +142,9 @@ def submit_login_info(request):
         "password": password
     }
 
-    token = requests.post("34.49.65.40:80/user/login", request.session["login_info"])
+    token = requests.post("http://34.49.65.40:80/user/login", request.session["login_info"])
     request.session["user_token"] = token
-    return redirect("34.110.196.225:80/documentos/documentosCarga")
+    return redirect("http://34.110.196.225:80/documentos/documentosCarga")
 
 
 def loginOTP(request):
@@ -241,7 +241,7 @@ def submit_signup_info(request):
         "password": password
     }
 
-    response = requests.post("34.49.65.40:80/user/signup", request.session["signup_info"])
+    response = requests.post("http://34.49.65.40:80/user/signup", request.session["signup_info"])
 
     return redirect(reverse('loginPageForm'))
 
