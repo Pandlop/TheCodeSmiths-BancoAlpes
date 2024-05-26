@@ -120,8 +120,12 @@ def logout(request):
         ),
     )
 
+
+
+
 @csrf_exempt
 def submit_login_info(request):
+    request.session.clear()
 
     first_name = str(request.POST["first_name"])
     last_name = str(request.POST["last_name"])
@@ -148,7 +152,7 @@ def submit_login_info(request):
     # Verificar si la solicitud fue exitosa
     if response.status_code == 200:
         # Extraer el token de la respuesta JSON
-        print(response)
+        print(response.text)
         # request.session["user_token"] = response.get(["access_token"]  # Asegúrate de extraer solo el token
 
         return HttpResponse(request.session["user_token"])
