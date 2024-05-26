@@ -142,9 +142,9 @@ def submit_login_info(request):
         "password": password
     }
 
-    token = requests.post("35.186.252.174:80/user/login", request.session["login_info"])
-    
-    return redirect("35.190.37.31:80/documentos")
+    token = requests.post("34.49.65.40:80/user/login", request.session["login_info"])
+    request.session["user_token"] = token
+    return redirect("34.110.196.225:80/documentos/documentosCarga")
 
 
 def loginOTP(request):
