@@ -151,7 +151,7 @@ def submit_login_info(request):
         token_data = response.json()
         request.session["user_token"] = token_data.get("token")  # Asegúrate de extraer solo el token
 
-        return HttpResponse(request.session["user_token"])
+        return HttpResponse(token_data)
     else:
         # Manejar el caso de error
         return HttpResponse({'error': 'Login failed. Please try again.'})
