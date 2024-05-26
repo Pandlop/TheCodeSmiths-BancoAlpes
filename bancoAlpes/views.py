@@ -57,12 +57,7 @@ oauth.register(
 @csrf_exempt
 def login(request):
 
-    if "user_token" in request.session:
-
-        token = request.session["user_token"]
-        return HttpResponse(status=200, content={"token": token})
-    else:
-        return render(request, "loginPageForm.html")        
+    return render(request, "loginPageForm.html")        
         
 
 @csrf_exempt
@@ -269,6 +264,13 @@ def submit_signup_info(request):
 
 @csrf_exempt
 def loginPage(request):
+
+    response = requests.get("http://35.190.51.156:8082/user/is_authenticated?token=" + request.session["user_token"])
+            
+    if "error" in response.text:
+        return redirect("http://35.184.109.166:8080/loginPage")
+
+    
 
     if "user_token" in request.session:
 
