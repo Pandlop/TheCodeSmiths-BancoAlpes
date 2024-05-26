@@ -123,22 +123,22 @@ def logout(request):
 @csrf_exempt
 def submit_login_info(request):
 
-    firstName = str(request.POST["firstName"])
-    lastName = str(request.POST["lastName"])
-    pais = str(request.POST["pais"])
-    ciudad = str(request.POST["ciudad"])
+    first_name = str(request.POST["first_name"])
+    last_name = str(request.POST["last_name"])
+    country = str(request.POST["country"])
+    city = str(request.POST["city"])
     email = str(request.POST["email"])
-    numero = str(request.POST["numero"])
+    phone = str(request.POST["phone"])
     password = str(request.POST["password"])
 
 
     request.session["login_info"] = {
-        "first_name": firstName,
-        "last_name": lastName,
-        "country": pais,
-        "city": ciudad,
+        "first_name": first_name,
+        "last_name": last_name,
+        "country": country,
+        "city": city,
         "email": email,
-        "phone": numero,
+        "phone": phone,
         "password": password
     }
 
@@ -222,22 +222,22 @@ def signupPageForm(request):
 
 @csrf_exempt
 def submit_signup_info(request):
-    firstName = str(request.POST["firstName"])
-    lastName = str(request.POST["lastName"])
-    pais = str(request.POST["pais"])
-    ciudad = str(request.POST["ciudad"])
+    first_name = str(request.POST["first_name"])
+    last_name = str(request.POST["last_name"])
+    country = str(request.POST["country"])
+    city = str(request.POST["city"])
     email = str(request.POST["email"])
-    numero = str(request.POST["numero"])
+    phone = str(request.POST["phone"])
     password = str(request.POST["password"])
 
 
     request.session["signup_info"] = {
-        "first_name": firstName,
-        "last_name": lastName,
-        "country": pais,
-        "city": ciudad,
+        "first_name": first_name,
+        "last_name": last_name,
+        "country": country,
+        "city": city,
         "email": email,
-        "phone": numero,
+        "phone": phone,
         "password": password
     }
 
