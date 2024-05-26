@@ -150,6 +150,7 @@ def submit_login_info(request):
     response = requests.post("http://34.49.65.40:80/user/login", json=request.session["login_info"])
     # print(response.text)
     # Verificar si la solicitud fue exitosa
+    print(response.status_code)
     if response.status_code == 200:
         # Extraer el token de la respuesta JSON
         request.session["user_token"] = response.json().get("access_token") # Asegúrate de extraer solo el token
