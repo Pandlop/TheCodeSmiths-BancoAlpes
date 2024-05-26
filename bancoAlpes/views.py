@@ -133,16 +133,16 @@ def submit_login_info(request):
 
 
     request.session["login_info"] = {
-        "firstName": firstName,
-        "lastName": lastName,
-        "pais": pais,
-        "ciudad": ciudad,
+        "first_name": firstName,
+        "last_name": lastName,
+        "country": pais,
+        "city": ciudad,
         "email": email,
-        "numero": numero,
+        "phone": numero,
         "password": password
     }
 
-    token = requests.post("http://34.49.65.40:80/user/login", request.session["login_info"])
+    token = requests.post("http://34.49.65.40:80/user/login", data=request.session["login_info"], headers=request.session["login_info"])
     request.session["user_token"] = token
     return redirect("http://34.110.196.225:80/documentos/documentosCarga")
 
@@ -232,16 +232,16 @@ def submit_signup_info(request):
 
 
     request.session["signup_info"] = {
-        "firstName": firstName,
-        "lastName": lastName,
-        "pais": pais,
-        "ciudad": ciudad,
+        "first_name": firstName,
+        "last_name": lastName,
+        "country": pais,
+        "city": ciudad,
         "email": email,
-        "numero": numero,
+        "phone": numero,
         "password": password
     }
 
-    response = requests.post("http://34.49.65.40:80/user/signup", headers=request.session["signup_info"])
+    response = requests.post("http://34.49.65.40:80/user/signup", data=request.session["signup_info"], headers=request.session["signup_info"])
 
     return redirect(reverse('loginPageForm'))
 
