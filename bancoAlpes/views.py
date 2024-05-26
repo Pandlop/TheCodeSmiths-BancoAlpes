@@ -218,7 +218,7 @@ def landingPage(request):
 @csrf_exempt
 def signupPageForm(request):
 
-    return render(request, 'loginPageForm.html')
+    return render(request, 'signupPageForm.html')
 
 @csrf_exempt
 def submit_signup_info(request):
