@@ -94,28 +94,28 @@
         <form action="submit_signup_info/" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div>
-                <label for="firstName">Nombre:</label>
-                <input type="text" id="firstName" name="firstName" required>
+                <label for="first_name">Nombre:</label>
+                <input type="text" id="first_name" name="first_name" required>
             </div>
             <div>
-                <label for="lastName">Apellidos:</label>
-                <input type="text" id="lastName" name="lastName" required>
+                <label for="last_name">Apellidos:</label>
+                <input type="text" id="last_name" name="last_name" required>
             </div>
             <div>
-                <label for="pais">País:</label>
-                <input type="text" id="pais" name="pais" required>
+                <label for="country">País:</label>
+                <input type="text" id="country" name="country" required>
             </div>
             <div>
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required>
+                <label for="city">Ciudad:</label>
+                <input type="text" id="city" name="city" required>
             </div>
             <div>
                 <label for="email">Correo electrónico:</label>
                 <input type="email" id="email" name="email" required>
             </div>
             <div>
-                <label for="numero">Celular (+57):</label>
-                <input type="number" id="numero" name="numero" required>
+                <label for="phone">Celular (+57):</label>
+                <input type="number" id="phone" name="phone" required>
             </div>
             <div>
                 <label for="password">Contraseña:</label>
