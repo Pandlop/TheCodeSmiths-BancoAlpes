@@ -160,7 +160,7 @@ def submit_login_info(request):
         url = requests.post("http://34.110.196.225:80/indexDocumentos/", json={"token":request.session["user_token"]})
 
         if url.status_code == 200:
-            return redirect("http://34.110.196.225:80/indexDocumentos/")
+            return redirect("http://34.110.196.225:80/indexDocumentos/", {"token":request.session["user_token"]})
             # return JsonResponse({"message": "Redirect successful", "data": url.json()})
         else:
             return JsonResponse({"error": "Redirection failed", "status_code": url.status_code}, status=500)
