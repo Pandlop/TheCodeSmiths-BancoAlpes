@@ -157,6 +157,7 @@ def submit_login_info(request):
         return HttpResponse( request.session["user_token"])
     else:
         # Manejar el caso de error
+        print("sus")
         return HttpResponse("error")
 
 def loginOTP(request):
