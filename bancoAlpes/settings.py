@@ -42,12 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap5',
     'bancoAlpes',
-    'landing',
-    'documentos',
-    'reportes',
     'solicitudes',
-    'usuarios',
-    'empleados',
+
 ]
 
 
