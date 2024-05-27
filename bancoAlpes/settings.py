@@ -140,10 +140,10 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia_db",
+        'NAME': "solicitudes_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.142.0.2",
+        "HOST": "10.142.0.4",
         # "HOST": "localhost",
         "PORT": "5432",
     },
