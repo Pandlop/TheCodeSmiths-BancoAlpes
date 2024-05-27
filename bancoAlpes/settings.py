@@ -42,12 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bootstrap5',
     'bancoAlpes',
-    'landing',
-    'documentos',
-    'reportes',
     'solicitudes',
-    'usuarios',
-    'empleados',
 ]
 
 
@@ -130,43 +125,14 @@ WSGI_APPLICATION = 'bancoAlpes.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': "persistenciabancoalpes",
-    #     'USER': "juanlopez",
-    #     "PASSWORD": "Codesmiths",
-    #     "HOST": "localhost",
-    #     "PORT": "5432",
-    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "persistencia_db",
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "solicitudes_db",
         'USER': "codesmiths_user",
         "PASSWORD": "codesmiths",
-        "HOST": "10.142.0.2",
-        # "HOST": "localhost",
+        "HOST": "10.142.0.4",
         "PORT": "5432",
     },
-
-
-    # 'usuarios': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': "validaciondocsbd",
-    #     'USER': "codesmiths_user",
-    #     "PASSWORD": "codesmiths",
-    #     "HOST": "localhost",
-    #     "PORT": "5432",
-    # },
-
-
-    # 'validacion_docsbd': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': "validaciondocsbd",
-    #     'USER': "codesmiths_user",
-    #     "PASSWORD": "codesmiths",
-    #     "HOST": "10.128.0.7",
-    #     "PORT": "5432",
-    # }
 
 }
 
