@@ -24,8 +24,30 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.landingPage, name='landingPage'),
 
+    #Llave publica servidor
+    path('llave_publica_servidor/', views.llavePublica, name="llavePublica"),
+
+
+    # URS's de autenticacion -----------------------------------------------------
+    path('login/', views.login, name='login'),
+    path('callback/', views.callback, name='callback'),
+    path('logout/', views.logout, name='logout'),
+    # Otras URL's ----------------------------------------------------------------
+    path('indexDocumentos/', views.indexDocumentos, name='indexDocumentos'),
+    path('loginPage/', views.loginPage, name='loginPage'),
+    path('loginPage/loginPageForm/', views.loginPageForm, name='loginPageForm'),
+    path('loginPage/loginPageForm/submit_login_info/', views.submit_login_info, name='submit_login_info'),
+    path('loginPage/signupPageForm/', views.signupPageForm, name='signupPageForm'),
+    path('loginPage/signupPageForm/submit_signup_info/', views.submit_signup_info, name='submit_signup_info'),
+
+    # path('loginPage/loginPageForm/submit_login_info/loginOTP/', views.loginOTP, name='loginOTP'),
+    # path('loginPage/loginPageForm/submit_login_info/loginOTP/submit_otp/', views.submit_otp, name='submit_otp'),
+
 
     path('admin/', admin.site.urls),
+    path('documentos/', include('documentos.urls')),
+    path('landingPage/', include('landing.urls')),
+    path('empleados/', include('empleados.urls')),
     path('solicitudes/', include('solicitudes.urls')),
     path('health-check/', views.healthCheck),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
