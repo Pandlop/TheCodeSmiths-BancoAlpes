@@ -10,7 +10,7 @@ def token_required(view_func):
         if not request.session["user_token"]:
             return render(request, "loginPage.html")    
         else:
-            response = requests.get("http://35.190.51.156:8082/user/is_authenticated?token=" + request.session["user_token"])
+            response = requests.get("http://35.225.39.57:8082/user/is_authenticated?token=" + request.session["user_token"])
             
             if "error" in response.text:
                 return render(request, "loginPage.html")
