@@ -142,7 +142,7 @@ def submit_login_info(request):
     }
 
     # Realizar la solicitud POST para obtener el token
-    response = requests.post("http://35.190.51.156:8082/user/login", json=request.session["login_info"])
+    response = requests.post("http://35.225.39.57:8082/user/login", json=request.session["login_info"])
     # print(response.text)
     # Verificar si la solicitud fue exitosa
     print(response.status_code)
@@ -258,7 +258,7 @@ def submit_signup_info(request):
         "email": email,
         "password": password
     }
-    response = requests.post("http://35.190.51.156:8082/user/signup", json=request.session["signup_info"])
+    response = requests.post("http://35.225.39.57:8082/user/signup", json=request.session["signup_info"])
     return redirect(reverse('loginPageForm'))
 
 
